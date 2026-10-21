@@ -1,0 +1,17 @@
+{
+  "name": "ICT পাঠশালা",
+  "short_name": "ICT পাঠশালা",
+  "description": "ICT লেসন, স্লাইড নোট ও ভিডিও ক্লাস",
+  "lang": "bn",
+  "start_url": "/Ict/",
+  "scope": "/Ict/",
+  "id": "/Ict/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#090e1f",
+  "theme_color": "#0d1440",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}

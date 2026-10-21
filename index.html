@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ICT পাঠশালা</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap">
+<style>
+:root{--bg:#f1f3f9;--card:#fff;--ink:#0f1630;--mute:#5a6585;--acc:#2f4bd8;--gold:#c8921a;--goldbg:#fbf1d6;--line:#dfe4f0;--ok:#0e7a57;--sh:0 1px 2px rgba(15,22,48,.06),0 8px 24px -12px rgba(15,22,48,.18);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#090e1f;--card:#121a35;--ink:#eaeefb;--mute:#97a3c6;--acc:#8ea4ff;--gold:#ecc062;--goldbg:#2a2412;--line:#222d52;--ok:#52d6a6;--sh:0 1px 0 rgba(255,255,255,.04) inset,0 10px 28px -14px rgba(0,0,0,.8)}}
+:root[data-theme="dark"]{--bg:#090e1f;--card:#121a35;--ink:#eaeefb;--mute:#97a3c6;--acc:#8ea4ff;--gold:#ecc062;--goldbg:#2a2412;--line:#222d52;--ok:#52d6a6;--sh:0 1px 0 rgba(255,255,255,.04) inset,0 10px 28px -14px rgba(0,0,0,.8)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hind Siliguri","Noto Sans Bengali",system-ui,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:600px;margin:0 auto;padding:18px 16px 48px}
+.hero{display:flex;align-items:center;gap:12px;margin:4px 0 18px}
+.logo{width:46px;height:46px;border-radius:14px;background:linear-gradient(145deg,#1d2a78,#0c1238);color:#f0c968;font-weight:700;display:grid;place-items:center;letter-spacing:.04em;box-shadow:var(--sh);border:1px solid rgba(240,201,104,.45)}
+h1{font-size:1.55rem;line-height:1.2;margin:0;letter-spacing:-.01em}
+.sub{color:var(--mute);margin:0;font-size:.92rem}
+.plan{position:relative;overflow:hidden;border-radius:20px;padding:20px 20px 18px;margin-bottom:8px;color:#eef1ff;background:linear-gradient(150deg,#1c2a7c 0%,#0d1440 70%);border:1px solid rgba(240,201,104,.4);box-shadow:var(--sh)}
+.plan::after{content:"ICT";position:absolute;right:-6px;bottom:-26px;font-size:7.5rem;font-weight:700;color:rgba(255,255,255,.05);line-height:1;pointer-events:none}
+.plan .k{font-size:.85rem;color:#f0c968;font-weight:600}
+.plan h2{margin:2px 0 6px;font-size:1.35rem;color:#fff;font-weight:700}
+.plan p{margin:0 0 14px;color:#c4cdf2;font-size:.93rem}
+.plan .pr{display:flex;align-items:center;justify-content:space-between;gap:12px;position:relative;z-index:1}
+.plan .am{font-size:2rem;font-weight:700;color:#fff;line-height:1}.plan .am small{font-size:.85rem;color:#b3bde8;font-weight:400}
+.gold{font:inherit;font-weight:700;border:0;cursor:pointer;border-radius:12px;padding:12px 20px;color:#2a1c00;background:linear-gradient(180deg,#f6d77f,#e2aa32);box-shadow:0 6px 16px -6px rgba(226,170,50,.7)}
+.gold:active{transform:scale(.97)}
+.btn{font:inherit;font-weight:700;background:var(--acc);color:#fff;border:0;border-radius:12px;padding:10px 16px;cursor:pointer}
+:root:not([data-theme="light"]) .btn{color:#0b1130}
+.btn.alt{background:transparent;color:var(--acc);border:1px solid var(--line)}
+.btn:focus-visible,.gold:focus-visible,.row:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.chh{display:flex;align-items:center;gap:12px;margin:26px 0 10px}
+.num{flex:none;width:34px;height:34px;border-radius:50%;background:var(--goldbg);color:var(--gold);font-weight:700;display:grid;place-items:center;border:1px solid var(--gold)}
+.chh b{font-size:1.08rem;line-height:1.3;display:block}.chh small{color:var(--mute)}
+.row{all:unset;display:flex;box-sizing:border-box;width:100%;gap:13px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px;margin-bottom:9px;cursor:pointer;box-shadow:var(--sh);transition:transform .12s}
+.row:active{transform:scale(.985)}
+.ic{flex:none;width:44px;height:44px;border-radius:12px;background:var(--bg);display:grid;place-items:center;color:var(--acc)}
+.ic svg{width:22px;height:22px}
+.row b{display:block;line-height:1.3}.row small{color:var(--mute);font-size:.85rem}
+.tg{margin-left:auto;font-size:.78rem;font-weight:700;white-space:nowrap;padding:3px 10px;border-radius:99px;display:flex;align-items:center;gap:4px;background:rgba(14,122,87,.12);color:var(--ok)}
+.tg.l{background:var(--goldbg);color:var(--gold)}.tg svg{width:12px;height:12px}
+#view{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;z-index:20;padding-top:env(safe-area-inset-top,0px)}
+#view.on{display:flex}
+.top{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card);border-bottom:1px solid var(--line)}
+.top b{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#stage{flex:1;min-height:0;overflow:auto;padding-bottom:env(safe-area-inset-bottom,0px)}
+#stage iframe{width:100%;height:100%;border:0;background:#fff;display:block}
+.sl{display:flex;flex-direction:column;height:100%}
+.sl .im{flex:1;min-height:0;display:grid;place-items:center;padding:10px}
+.sl img{max-width:100%;max-height:100%;border-radius:12px;box-shadow:var(--sh)}
+.nav{display:flex;gap:12px;align-items:center;justify-content:center;padding:12px;color:var(--mute)}
+video{width:100%;max-height:100%;background:#000;display:block}
+.lock{margin:24px 16px;background:var(--card);border:1px solid var(--gold);border-radius:18px;padding:24px;text-align:center;box-shadow:var(--sh)}
+.lock .lk{width:52px;height:52px;margin:0 auto 10px;border-radius:50%;background:var(--goldbg);color:var(--gold);display:grid;place-items:center}
+.lock .lk svg{width:24px;height:24px}
+dialog{border:1px solid var(--line);border-radius:20px;background:var(--card);color:var(--ink);width:calc(100% - 24px);max-width:460px;max-height:92vh;padding:20px;overflow:auto;box-shadow:var(--sh)}
+dialog::backdrop{background:rgba(5,8,20,.65)}
+dialog h3{margin:0 0 2px;font-size:1.3rem}
+.pay{display:flex;justify-content:space-between;align-items:center;gap:8px;border:1px solid var(--line);border-radius:14px;padding:11px 13px;margin:8px 0;background:var(--bg)}
+.pay b{font-size:1.1rem;letter-spacing:.03em}
+ol{padding-left:20px;margin:8px 0}
+label{font-size:.9rem;color:var(--mute)}
+input{width:100%;font:inherit;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);margin:4px 0 8px}
+.msg{min-height:1.4em;font-weight:600}.msg.e{color:#d63a3a}.msg.g{color:var(--ok)}
+hr{border:0;border-top:1px solid var(--line);margin:16px 0}
+@media (prefers-reduced-motion:reduce){.row{transition:none}}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--sh)}
+.tabs{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto}
+.tabs button{all:unset;cursor:pointer;padding:8px 14px;border-radius:99px;border:1px solid var(--line);font-weight:600;white-space:nowrap;color:var(--mute)}
+.tabs button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+:root:not([data-theme="light"]) .tabs button.on{color:#0b1130}
+.lnk{all:unset;cursor:pointer;color:var(--acc);font-size:.9rem;margin-top:6px;display:inline-block}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.stat b{font-size:1.5rem;display:block;line-height:1.2}.stat small{color:var(--mute)}
+.it{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:8px}
+.it small{color:var(--mute);display:block}
+.acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.sm{font:inherit;font-weight:600;font-size:.85rem;padding:6px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.sm.p{background:var(--ok);color:#fff;border-color:var(--ok)}.sm.d{color:#d63a3a}
+.bd{display:inline-block;font-size:.75rem;font-weight:700;padding:2px 9px;border-radius:99px}
+.bd.g{background:rgba(14,122,87,.14);color:var(--ok)}.bd.y{background:var(--goldbg);color:var(--gold)}.bd.r{background:rgba(214,58,58,.12);color:#d63a3a}
+.banner{background:var(--goldbg);border:1px solid var(--gold);border-radius:14px;padding:12px;margin-bottom:12px;font-size:.92rem}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.hd small{color:var(--mute);display:block;max-width:44vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+textarea{width:100%;font:inherit;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink)}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+
+<div id="boot" class="wrap"><p class="sub">লোড হচ্ছে…</p></div>
+
+<div id="auth" class="wrap" hidden>
+  <header class="hero"><div class="logo">ICT</div><div><h1>ICT পাঠশালা</h1><p class="sub">অ্যাকাউন্ট খুলে শুরু করো</p></div></header>
+  <div class="card">
+    <div class="tabs"><button class="on" data-m="in">লগইন</button><button data-m="up">নতুন অ্যাকাউন্ট</button></div>
+    <label>ইমেইল (Gmail)</label>
+    <input id="em" type="email" autocomplete="email" autocapitalize="off" placeholder="name@gmail.com">
+    <label>পাসওয়ার্ড</label>
+    <input id="pw" type="password" autocomplete="current-password" placeholder="কমপক্ষে ৬ অক্ষর">
+    <div id="pw2w" hidden><label>পাসওয়ার্ড আবার লেখো</label><input id="pw2" type="password" autocomplete="new-password"></div>
+    <button class="gold" id="go" style="width:100%;margin-top:6px">লগইন করো</button>
+    <div class="msg" id="am"></div>
+    <button class="lnk" id="fg">পাসওয়ার্ড ভুলে গেছ?</button>
+  </div>
+</div>
+
+<div id="app" class="wrap" hidden>
+  <div class="hd"><header class="hero" style="margin:0"><div class="logo">ICT</div><div><h1 style="font-size:1.3rem">ICT পাঠশালা</h1></div></header>
+    <div style="text-align:right"><small id="who"></small><button class="lnk" id="lo">লগআউট</button></div></div>
+  <div id="vb"></div>
+  <section class="plan" id="plan"></section>
+  <div id="list"></div>
+</div>
+
+<div id="view"><div class="top"><button class="btn alt" id="back">← ফিরে যাও</button><b id="vt"></b></div><div id="stage"></div></div>
+<div id="adm" class="ov" style="position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;z-index:30;padding-top:env(safe-area-inset-top,0px)">
+  <div class="top"><button class="btn alt" id="aback">← ফিরে যাও</button><b>অ্যাডমিন প্যানেল</b><button class="sm" id="aref">রিফ্রেশ</button></div>
+  <div style="flex:1;overflow:auto;padding:12px 14px calc(30px + env(safe-area-inset-bottom,0px))"><div style="max-width:600px;margin:0 auto">
+    <div class="tabs" id="atabs"><button data-t="u" class="on">ইউজার</button><button data-t="r">রিকোয়েস্ট</button><button data-t="c">কনটেন্ট</button></div>
+    <div id="abody"></div></div></div>
+</div>
+
+<dialog id="dlg">
+  <h3>সব কনটেন্ট আনলক করো</h3>
+  <p style="margin:0;color:var(--mute)">১ মাস, মাত্র <b>১০০ টাকা</b></p>
+  <ol>
+    <li>নিচের যেকোনো নম্বরে ১০০ টাকা <b>Send Money</b> করো।</li>
+    <li>যে নম্বর থেকে পাঠিয়েছ সেটা ও TrxID লিখে রিকোয়েস্ট দাও।</li>
+    <li>টাকা যাচাই হলেই অ্যাপ নিজে আনলক হয়ে যাবে।</li>
+  </ol>
+  <div class="pay"><span>bKash (Personal)<br><b>01908523912</b></span><button class="btn alt" data-copy="01908523912">কপি</button></div>
+  <div class="pay"><span>Nagad (Personal)<br><b>01577653713</b></span><button class="btn alt" data-copy="01577653713">কপি</button></div>
+  <div id="lastreq"></div>
+  <label>কোন মাধ্যমে পাঠিয়েছ?</label>
+  <select id="meth" style="width:100%;font:inherit;padding:11px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);margin:4px 0 8px"><option>bKash</option><option>Nagad</option></select>
+  <label>যে মোবাইল নম্বর থেকে পাঠিয়েছ</label>
+  <input id="ph" inputmode="numeric" placeholder="01XXXXXXXXX">
+  <label>TrxID</label>
+  <input id="trx" placeholder="যেমন: 9AB3XYZ12" autocapitalize="characters">
+  <div style="display:flex;gap:8px"><button class="gold" id="sendreq">রিকোয়েস্ট পাঠাও</button><button class="btn alt" id="cl">বন্ধ</button></div>
+  <div class="msg" id="m1"></div>
+</dialog>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,sendEmailVerification,sendPasswordResetEmail} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import {getFirestore,doc,getDoc,setDoc,updateDoc,deleteDoc,collection,getDocs,onSnapshot,query,orderBy,where,addDoc} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+const cfg={apiKey:"AIzaSyBr-2bWVfVk14lkiUX5PVxjQUS5iSzemIQ",authDomain:"ict-c718c.firebaseapp.com",projectId:"ict-c718c",storageBucket:"ict-c718c.firebasestorage.app",messagingSenderId:"42724120405",appId:"1:42724120405:web:62431878ea16c63bab01dc"};
+const ADMIN="mdsanu2018@gmail.com";
+const app=initializeApp(cfg),auth=getAuth(app),db=getFirestore(app);
+const $=i=>document.getElementById(i);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const BN=n=>String(n).replace(/\d/g,d=>"০১২৩৪৫৬৭৮৯"[d]);
+const fd=ms=>ms?new Date(ms).toLocaleDateString("bn-BD",{day:"numeric",month:"short",year:"numeric"}):"-";
+const S=p=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+const ICON={html:S('<path d="M8 8l-4 4 4 4M16 8l4 4-4 4M14 5l-4 14"/>'),slides:S('<rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/>'),video:S('<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z"/>')};
+const LOCK=S('<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>');
+const ERR={"auth/invalid-credential":"ইমেইল বা পাসওয়ার্ড ঠিক নেই।","auth/wrong-password":"পাসওয়ার্ড ঠিক নেই।","auth/user-not-found":"এই ইমেইলে অ্যাকাউন্ট নেই।","auth/email-already-in-use":"এই ইমেইলে আগেই অ্যাকাউন্ট আছে। লগইন করো।","auth/weak-password":"পাসওয়ার্ড কমপক্ষে ৬ অক্ষর দাও।","auth/invalid-email":"ইমেইল সঠিক নয়।","auth/network-request-failed":"ইন্টারনেট সংযোগ চেক করো।","auth/too-many-requests":"অনেকবার চেষ্টা হয়েছে, একটু পরে আবার করো।","auth/unauthorized-domain":"এই ওয়েবসাইট Firebase-এ অনুমোদিত নয় (Authorized domains-এ যোগ করতে হবে)।"};
+
+let user=null,me=null,isAdmin=false,sub=false,lessons=[],unsubMe=null,mode="in",atab="u";
+const show=id=>["boot","auth","app"].forEach(x=>$(x).hidden=x!==id);
+
+/* ---------- Auth ---------- */
+document.querySelectorAll("#auth .tabs button").forEach(b=>b.onclick=()=>{
+  mode=b.dataset.m;document.querySelectorAll("#auth .tabs button").forEach(x=>x.classList.toggle("on",x===b));
+  $("pw2w").hidden=mode!=="up";$("go").textContent=mode==="up"?"অ্যাকাউন্ট খোলো":"লগইন করো";$("am").textContent="";
+});
+function amsg(t,ok){$("am").className="msg "+(ok?"g":"e");$("am").textContent=t}
+$("go").onclick=async()=>{
+  const e=$("em").value.trim(),p=$("pw").value;
+  if(!e||!p){amsg("ইমেইল ও পাসওয়ার্ড দাও।");return}
+  if(mode==="up"&&p!==$("pw2").value){amsg("দুটো পাসওয়ার্ড মেলেনি।");return}
+  $("go").disabled=true;amsg("");
+  try{
+    if(mode==="up"){const c=await createUserWithEmailAndPassword(auth,e,p);try{await sendEmailVerification(c.user)}catch(_){}}
+    else await signInWithEmailAndPassword(auth,e,p);
+  }catch(x){amsg(ERR[x.code]||("সমস্যা: "+x.code))}
+  $("go").disabled=false;
+};
+$("fg").onclick=async()=>{
+  const e=$("em").value.trim();if(!e){amsg("উপরে ইমেইল লিখে আবার চাপো।");return}
+  try{await sendPasswordResetEmail(auth,e);amsg("পাসওয়ার্ড রিসেট লিংক ইমেইলে পাঠানো হয়েছে।",true)}catch(x){amsg(ERR[x.code]||("সমস্যা: "+x.code))}
+};
+$("lo").onclick=()=>signOut(auth);
+
+onAuthStateChanged(auth,async u=>{
+  if(unsubMe){unsubMe();unsubMe=null}
+  user=u;me=null;sub=false;isAdmin=false;
+  if(!u){show("auth");return}
+  show("boot");
+  isAdmin=(u.email||"").toLowerCase()===ADMIN&&u.emailVerified;
+  try{
+    const r=doc(db,"users",u.uid),s=await getDoc(r);
+    if(!s.exists())await setDoc(r,{email:u.email,createdAt:Date.now(),lastLogin:Date.now(),subUntil:0});
+    else await updateDoc(r,{lastLogin:Date.now()});
+    unsubMe=onSnapshot(r,d=>{me=d.data()||{};sub=(me.subUntil||0)>Date.now();render()});
+    await loadLessons();
+  }catch(e){console.error(e)}
+  show("app");render();
+});
+
+async function loadLessons(){
+  try{const s=await getDocs(query(collection(db,"lessons"),orderBy("order")));lessons=s.docs.map(d=>({id:d.id,...d.data()}))}catch(e){lessons=[]}
+}
+
+/* ---------- Home ---------- */
+function render(){
+  if(!user)return;
+  $("who").textContent=user.email;
+  const needV=(user.email||"").toLowerCase()===ADMIN&&!user.emailVerified;
+  $("vb").innerHTML=needV?`<div class="banner">অ্যাডমিন হতে তোমার ইমেইল ভেরিফাই করতে হবে। ইমেইলে পাঠানো লিংকে চাপো, তারপর <button class="sm" id="rv">ভেরিফাই করেছি</button> চাপো। <button class="lnk" id="rs">আবার পাঠাও</button></div>`:"";
+  if(needV){$("rv").onclick=async()=>{await user.reload();await user.getIdToken(true);location.reload()};$("rs").onclick=async()=>{try{await sendEmailVerification(user);$("rs").textContent="পাঠানো হয়েছে"}catch(e){$("rs").textContent="একটু পরে চেষ্টা করো"}}}
+  const until=me&&me.subUntil;
+  let plan="";
+  if(isAdmin)plan=`<div class="k">অ্যাডমিন</div><h2>সব কিছু ফ্রি, পূর্ণ নিয়ন্ত্রণ</h2><p>ইউজার, পেমেন্ট রিকোয়েস্ট ও কনটেন্ট এখান থেকে সামলাও।</p><button class="gold" data-adm="1">অ্যাডমিন প্যানেল খোলো</button>`;
+  else if(sub)plan=`<div class="k">প্রিমিয়াম সক্রিয়</div><h2>সব কনটেন্ট আনলকড</h2><p>মেয়াদ: ${fd(until)} পর্যন্ত। শেষ হলে আবার সাবস্ক্রাইব করো।</p>`;
+  else plan=`<div class="k">${until?"মেয়াদ শেষ হয়েছে":"ফ্রি ডেমো চলছে"}</div><h2>সব লেসন আনলক করো</h2><p>ভিডিও ক্লাস, সব অনুশীলন ও সমাধান, পুরো স্লাইড নোট।</p><div class="pr"><div class="am">১০০৳ <small>/ মাস</small></div><button class="gold" data-pay="1">সাবস্ক্রাইব করো</button></div>`;
+  $("plan").innerHTML=plan;
+  if(!lessons.length){$("list").innerHTML=`<p class="sub" style="margin-top:20px">কনটেন্ট শীঘ্রই আসছে।</p>`;return}
+  let h="",cur="";
+  lessons.forEach(it=>{
+    if(it.ch!==cur){cur=it.ch;const p=cur.split(" · "),n=lessons.filter(x=>x.ch===cur).length;h+=`<div class="chh"><span class="num">${esc((p[0]||"").replace("অধ্যায় ",""))}</span><div><b>${esc(p[1]||p[0])}</b><small>${BN(n)}টি লেসন</small></div></div>`}
+    const open=isAdmin||sub||it.free;
+    h+=`<button class="row" data-id="${esc(it.id)}"><span class="ic">${ICON[it.type]||ICON.html}</span><span><b>${esc(it.title)}</b><small>${esc(it.note||"")}</small></span><span class="tg ${open?"":"l"}">${open?(it.free?"ফ্রি":"আনলকড"):LOCK+"লকড"}</span></button>`;
+  });
+  $("list").innerHTML=h;
+}
+$("plan").onclick=e=>{if(e.target.closest("[data-pay]"))openPay();if(e.target.closest("[data-adm]"))openAdmin()};
+$("list").onclick=e=>{const b=e.target.closest(".row");if(b)openLesson(lessons.find(x=>x.id===b.dataset.id))};
+
+/* ---------- Viewer ---------- */
+function lockCard(){return `<div class="lock"><div class="lk">${LOCK}</div><h3 style="margin-top:0">এটি সাবস্ক্রাইবারদের জন্য</h3><p>মাত্র ১০০ টাকায় ১ মাস সব অধ্যায়, ভিডিও ও অনুশীলন।</p><button class="gold" onclick="document.dispatchEvent(new Event('paynow'))">আনলক করো</button></div>`}
+document.addEventListener("paynow",()=>openPay());
+$("back").onclick=()=>{$("view").classList.remove("on");$("stage").innerHTML=""};
+async function openLesson(l){
+  if(!l)return;const st=$("stage");
+  $("vt").textContent=l.title;$("view").classList.add("on");st.innerHTML="";
+  if(l.type==="slides")return slides(l);
+  if(!(isAdmin||sub||l.free)){st.innerHTML=lockCard();return}
+  st.innerHTML=`<p class="sub" style="padding:20px">লোড হচ্ছে…</p>`;
+  try{
+    const s=await getDoc(doc(db,"content",l.id));
+    if(!s.exists()){st.innerHTML=`<p class="sub" style="padding:20px">এই লেসন শীঘ্রই আসছে।</p>`;return}
+    const d=s.data();st.innerHTML="";
+    if(l.type==="video"){
+      const u=d.url||"",y=u.match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/);
+      if(y)st.innerHTML=`<iframe src="https://www.youtube.com/embed/${y[1]}?rel=0" allow="fullscreen; picture-in-picture" allowfullscreen style="width:100%;height:100%;border:0"></iframe>`;
+      else if(u)st.innerHTML=`<video controls playsinline src="${esc(u)}"></video>`;
+      else st.innerHTML=`<p class="sub" style="padding:20px">ভিডিও শীঘ্রই আসছে।</p>`;
+    }else{const f=document.createElement("iframe");f.setAttribute("sandbox","allow-scripts allow-forms allow-modals");f.srcdoc=d.html||"";st.appendChild(f)}
+  }catch(e){st.innerHTML=lockCard()}
+}
+function slides(l){
+  const st=$("stage"),n=l.pages||1,fp=l.freePages||0,cache={};let i=1;
+  const draw=async()=>{
+    const ok=isAdmin||sub||i<=fp;
+    st.innerHTML=`<div class="sl"><div class="im" id="im">${ok?"লোড হচ্ছে…":lockCard()}</div><div class="nav"><button class="btn alt" id="pv">আগের</button><span>${BN(i)} / ${BN(n)}</span><button class="btn" id="nx">পরের</button></div></div>`;
+    $("pv").onclick=()=>{if(i>1){i--;draw()}};$("nx").onclick=()=>{if(i<n){i++;draw()}};
+    if(!ok)return;const at=i;
+    try{
+      if(!cache[at]){const s=await getDoc(doc(db,"content",l.id+"_"+at));cache[at]=s.exists()?s.data().img:""}
+      if(at===i&&$("im"))$("im").innerHTML=cache[at]?`<img alt="স্লাইড ${at}" src="${cache[at]}">`:"পেজ পাওয়া যায়নি";
+    }catch(e){if($("im"))$("im").innerHTML=lockCard()}
+  };draw();
+}
+
+/* ---------- Payment request ---------- */
+document.querySelectorAll("[data-copy]").forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(b.dataset.copy);b.textContent="কপি হয়েছে"}catch(e){b.textContent="হাতে কপি করো"}});
+$("cl").onclick=()=>$("dlg").close();
+async function openPay(){
+  $("m1").textContent="";$("lastreq").innerHTML="";$("dlg").showModal();
+  try{
+    const s=await getDocs(query(collection(db,"requests"),where("uid","==",user.uid)));
+    const r=s.docs.map(d=>d.data()).sort((a,b)=>b.createdAt-a.createdAt)[0];
+    if(r){const t={pending:["y","যাচাই চলছে"],approved:["g","অনুমোদিত"],rejected:["r","বাতিল"]}[r.status]||["y",r.status];
+      $("lastreq").innerHTML=`<div class="banner">সর্বশেষ রিকোয়েস্ট (${esc(r.trx)}): <span class="bd ${t[0]}">${t[1]}</span></div>`}
+  }catch(e){}
+}
+$("sendreq").onclick=async()=>{
+  const m=$("m1"),ph=$("ph").value.replace(/\D/g,"").slice(-11),trx=$("trx").value.trim().toUpperCase();
+  if(ph.length!==11||ph[0]!=="0"){m.className="msg e";m.textContent="১১ ডিজিটের সঠিক নম্বর দাও।";return}
+  if(trx.length<6){m.className="msg e";m.textContent="TrxID লিখতে হবে।";return}
+  try{
+    await addDoc(collection(db,"requests"),{uid:user.uid,email:user.email,phone:ph,trx,method:$("meth").value,status:"pending",createdAt:Date.now()});
+    m.className="msg g";m.textContent="রিকোয়েস্ট জমা হয়েছে। টাকা যাচাই হলে নিজে থেকে আনলক হবে।";$("trx").value="";
+  }catch(e){m.className="msg e";m.textContent="পাঠানো যায়নি, আবার চেষ্টা করো।"}
+};
+
+/* ---------- Admin ---------- */
+$("aback").onclick=()=>$("adm").style.display="none";
+$("aref").onclick=()=>loadAdmin();
+document.querySelectorAll("#atabs button").forEach(b=>b.onclick=()=>{atab=b.dataset.t;document.querySelectorAll("#atabs button").forEach(x=>x.classList.toggle("on",x===b));loadAdmin()});
+function openAdmin(){$("adm").style.display="flex";loadAdmin()}
+async function approve(rid,uid){
+  const us=await getDoc(doc(db,"users",uid)),cur=us.exists()?(us.data().subUntil||0):0;
+  await updateDoc(doc(db,"users",uid),{subUntil:Math.max(Date.now(),cur)+30*864e5});
+  if(rid)await updateDoc(doc(db,"requests",rid),{status:"approved",approvedAt:Date.now()});
+}
+async function loadAdmin(){
+  const b=$("abody");b.innerHTML=`<p class="sub">লোড হচ্ছে…</p>`;
+  try{
+    if(atab==="u"){
+      const [us,rs]=await Promise.all([getDocs(collection(db,"users")),getDocs(collection(db,"requests"))]);
+      const U=us.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+      const now=Date.now(),act=U.filter(x=>x.subUntil>now).length,exp=U.filter(x=>x.subUntil&&x.subUntil<=now).length,pend=rs.docs.filter(d=>d.data().status==="pending").length;
+      b.innerHTML=`<div class="stats"><div class="stat"><b>${BN(U.length)}</b><small>মোট ইউজার</small></div><div class="stat"><b>${BN(act)}</b><small>সক্রিয় সাবস্ক্রাইবার</small></div><div class="stat"><b>${BN(U.length-act-exp)}</b><small>কখনো সাবস্ক্রাইব করেনি</small></div><div class="stat"><b>${BN(pend)}</b><small>পেন্ডিং রিকোয়েস্ট</small></div></div>`+
+      U.map(x=>{const st=x.subUntil>now?`<span class="bd g">সক্রিয় · ${fd(x.subUntil)} পর্যন্ত</span>`:x.subUntil?`<span class="bd r">মেয়াদ শেষ · ${fd(x.subUntil)}</span>`:`<span class="bd y">সাবস্ক্রাইব করেনি</span>`;
+        return `<div class="it"><b>${esc(x.email)}</b><small>অ্যাকাউন্ট: ${fd(x.createdAt)} · শেষ লগইন: ${fd(x.lastLogin)}</small><div style="margin-top:6px">${st}</div><div class="acts"><button class="sm p" data-act="add" data-uid="${esc(x.id)}">+৩০ দিন</button><button class="sm d" data-act="off" data-uid="${esc(x.id)}">বাতিল করো</button></div></div>`}).join("")||`<p class="sub">এখনো কেউ নেই।</p>`;
+    }else if(atab==="r"){
+      const s=await getDocs(collection(db,"requests"));
+      const R=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,c)=>(a.status==="pending"?0:1)-(c.status==="pending"?0:1)||c.createdAt-a.createdAt);
+      b.innerHTML=R.map(r=>{const t={pending:["y","পেন্ডিং"],approved:["g","অনুমোদিত"],rejected:["r","বাতিল"]}[r.status]||["y",r.status];
+        return `<div class="it"><b>${esc(r.email)}</b> <span class="bd ${t[0]}">${t[1]}</span><small>${esc(r.method)} · নম্বর: ${esc(r.phone)} · TrxID: <b>${esc(r.trx)}</b></small><small>${fd(r.createdAt)}</small>${r.status==="pending"?`<div class="acts"><button class="sm p" data-act="ok" data-rid="${esc(r.id)}" data-uid="${esc(r.uid)}">টাকা পেয়েছি, ৩০ দিন আনলক</button><button class="sm d" data-act="no" data-rid="${esc(r.id)}">বাতিল</button></div>`:""}</div>`}).join("")||`<p class="sub">কোনো রিকোয়েস্ট নেই।</p>`;
+    }else{
+      const chs=[...new Set(lessons.map(l=>l.ch))];
+      b.innerHTML=`<div class="card" style="margin-bottom:12px"><b>কনটেন্ট প্যাক আপলোড</b><small style="color:var(--mute);display:block;margin:4px 0 8px">content-pack.json ফাইলটি বেছে নাও (সব লেসন একসাথে উঠবে)।</small><input type="file" id="pk" accept=".json"><div class="msg" id="pkm"></div></div>
+      <div class="card" style="margin-bottom:12px"><b>নতুন লেসন যোগ করো (HTML ফাইল)</b>
+        <input id="nt" placeholder="লেসনের নাম"><input id="nn" placeholder="ছোট বিবরণ (ঐচ্ছিক)">
+        <input id="nc" list="chl" placeholder="অধ্যায়, যেমন: অধ্যায় ৫ · ডাটাবেস"><datalist id="chl">${chs.map(c=>`<option value="${esc(c)}">`).join("")}</datalist>
+        <label><input type="checkbox" id="nf" style="width:auto"> ফ্রি ডেমো হিসেবে রাখো</label>
+        <input type="file" id="nh" accept=".html,.htm"><button class="btn" id="na" style="margin-top:6px">যোগ করো</button><div class="msg" id="nm"></div></div>
+      <b>সব লেসন</b>`+lessons.map(l=>`<div class="it"><b>${esc(l.title)}</b> <span class="bd ${l.free?"g":"y"}">${l.free?"ফ্রি":"লকড"}</span><small>${esc(l.ch)} · ${esc(l.type)}</small>${l.type==="video"?`<input data-vid="${esc(l.id)}" placeholder="YouTube বা ভিডিও লিংক বসাও"><button class="sm p" data-act="vid" data-id="${esc(l.id)}">লিংক সেভ করো</button>`:""}<div class="acts"><button class="sm" data-act="tg" data-id="${esc(l.id)}">${l.free?"লকড করো":"ফ্রি করো"}</button><button class="sm d" data-act="del" data-id="${esc(l.id)}">মুছে ফেলো</button></div></div>`).join("");
+      $("pk").onchange=uploadPack;$("na").onclick=addLesson;
+    }
+  }catch(e){b.innerHTML=`<p class="msg e">লোড হয়নি: ${esc(e.code||e.message)}<br>Firestore Rules ঠিকমতো বসানো আছে কি না দেখো এবং ইমেইল ভেরিফাই হয়েছে কি না।</p>`}
+}
+$("abody").onclick=async e=>{
+  const t=e.target.closest("[data-act]");if(!t)return;const a=t.dataset.act;t.disabled=true;
+  try{
+    if(a==="add"){await approve(null,t.dataset.uid)}
+    else if(a==="off"){await updateDoc(doc(db,"users",t.dataset.uid),{subUntil:0})}
+    else if(a==="ok"){await approve(t.dataset.rid,t.dataset.uid)}
+    else if(a==="no"){await updateDoc(doc(db,"requests",t.dataset.rid),{status:"rejected"})}
+    else if(a==="vid"){const v=document.querySelector(`[data-vid="${t.dataset.id}"]`).value.trim();await setDoc(doc(db,"content",t.dataset.id),{url:v,free:false});t.textContent="সেভ হয়েছে";t.disabled=false;return}
+    else if(a==="tg"){const l=lessons.find(x=>x.id===t.dataset.id);await updateDoc(doc(db,"lessons",l.id),{free:!l.free});if(l.type==="html")await updateDoc(doc(db,"content",l.id),{free:!l.free});await loadLessons()}
+    else if(a==="del"){if(!confirm("সত্যিই মুছবে?")){t.disabled=false;return}await deleteDoc(doc(db,"lessons",t.dataset.id));try{await deleteDoc(doc(db,"content",t.dataset.id))}catch(_){}await loadLessons()}
+    await loadAdmin();render();
+  }catch(err){alert("হয়নি: "+(err.code||err.message));t.disabled=false}
+};
+async function uploadPack(e){
+  const m=$("pkm"),f=e.target.files[0];if(!f)return;
+  try{
+    const p=JSON.parse(await f.text()),L=p.lessons||[],C=p.content||[];let n=0,tot=L.length+C.length;
+    for(const l of L){await setDoc(doc(db,"lessons",l.id),l);m.className="msg g";m.textContent=`আপলোড হচ্ছে… ${BN(++n)}/${BN(tot)}`}
+    for(const c of C){await setDoc(doc(db,"content",c.id),c.data);m.textContent=`আপলোড হচ্ছে… ${BN(++n)}/${BN(tot)}`}
+    m.textContent="আপলোড শেষ! ✅";await loadLessons();render();loadAdmin();
+  }catch(err){m.className="msg e";m.textContent="আপলোড হয়নি: "+(err.code||err.message)}
+}
+async function addLesson(){
+  const m=$("nm"),f=$("nh").files[0],title=$("nt").value.trim(),ch=$("nc").value.trim();
+  if(!title||!ch||!f){m.className="msg e";m.textContent="নাম, অধ্যায় ও HTML ফাইল দাও।";return}
+  try{
+    const html=await f.text(),free=$("nf").checked,id="l"+Date.now(),order=lessons.reduce((a,l)=>Math.max(a,l.order||0),0)+1;
+    await setDoc(doc(db,"content",id),{html,free});
+    await setDoc(doc(db,"lessons",id),{id,ch,title,note:$("nn").value.trim(),type:"html",free,order});
+    m.className="msg g";m.textContent="যোগ হয়েছে ✅";await loadLessons();render();loadAdmin();
+  }catch(err){m.className="msg e";m.textContent="হয়নি: "+(err.code||err.message)}
+}
+</script>
+</body>
+</html>

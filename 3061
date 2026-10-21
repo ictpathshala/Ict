@@ -1,0 +1,48 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+
+    function isAdmin() {
+      return signedIn()
+        && request.auth.token.email_verified == true
+        && request.auth.token.email == 'mdsanu2018@gmail.com';
+    }
+
+    function isSub() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.subUntil > request.time.toMillis();
+    }
+
+    match /users/{uid} {
+      allow read: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      allow create: if signedIn() && request.auth.uid == uid
+        && request.resource.data.subUntil == 0
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.keys().hasOnly(['email','createdAt','lastLogin','subUntil']);
+      allow update: if isAdmin()
+        || (signedIn() && request.auth.uid == uid
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastLogin']));
+    }
+
+    match /requests/{id} {
+      allow create: if signedIn()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.status == 'pending';
+      allow read: if isAdmin() || (signedIn() && resource.data.uid == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    match /lessons/{id} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    match /content/{id} {
+      allow read: if isAdmin() || (signedIn() && (resource.data.free == true || isSub()));
+      allow write: if isAdmin();
+    }
+  }
+}

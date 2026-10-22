@@ -344,6 +344,7 @@ async function loadAdmin(){
         <input id="nc" list="chl" placeholder="অধ্যায়, যেমন: অধ্যায় ৫ · ডাটাবেস"><datalist id="chl">${chs.map(c=>`<option value="${esc(c)}">`).join("")}</datalist>
         <label><input type="checkbox" id="nf" style="width:auto"> ফ্রি ডেমো হিসেবে রাখো</label>
         <input type="file" id="nh" accept=".html,.htm"><button class="btn" id="na" style="margin-top:6px">যোগ করো</button><div class="msg" id="nm"></div></div>
+      <div class="card" style="margin-bottom:12px"><b>PDF স্লাইড আপলোড (সরাসরি, ফ্রি)</b><small style="color:var(--mute);display:block;margin:4px 0 8px">PDF সিলেক্ট করে একবার চাপো। প্রতিটা পেজ ছবি হয়ে জমা হবে। শেষ না হওয়া পর্যন্ত পেজ বন্ধ কোরো না।</small><input id="ppt" placeholder="স্লাইডের নাম"><input id="ppc" list="chl" placeholder="অধ্যায়, যেমন: অধ্যায় ৪ · ওয়েব ডিজাইন ও HTML"><input id="ppx" type="number" min="0" value="0" placeholder="প্রথম কয়টা পেজ ফ্রি দেখা যাবে (০ হলে সব লকড)"><input type="file" id="ppf" accept=".pdf,application/pdf"><button class="btn" id="upp" style="margin-top:6px">PDF আপলোড করো</button><div class="msg" id="ppm"></div></div>
       <div class="card" style="margin-bottom:12px"><b>নতুন ভিডিও / PDF লেসন যোগ করো</b><small style="color:var(--mute);display:block;margin:4px 0 8px">প্রতিটি ভিডিওর জন্য আলাদা করে যোগ করো, আগেরগুলো থাকবে।</small>
         <input id="vt1" placeholder="ভিডিওর নাম"><input id="vn1" placeholder="ছোট বিবরণ (ঐচ্ছিক)">
         <input id="vc1" list="chl" placeholder="অধ্যায়, যেমন: অধ্যায় ৪ · ওয়েব ডিজাইন ও HTML">
@@ -351,7 +352,7 @@ async function loadAdmin(){
         <label><input type="checkbox" id="vf1" style="width:auto"> ফ্রি ডেমো হিসেবে রাখো</label>
         <button class="btn" id="nva" style="margin-top:6px">ভিডিও যোগ করো</button><div class="msg" id="vm1"></div></div>
       <b>সব লেসন</b>`+lessons.map(l=>`<div class="it"><b>${esc(l.title)}</b> <span class="bd ${l.free?"g":"y"}">${l.free?"ফ্রি":"লকড"}</span><small>${esc(l.ch)} · ${esc(l.type)}</small>${l.type==="html"?`<input type="file" accept=".html,.htm" data-hf="${esc(l.id)}">`:""}${(l.type==="video"||l.type==="pdf")?`<input data-vid="${esc(l.id)}" placeholder="লিংক বসাও (YouTube / Drive)"><button class="sm p" data-act="vid" data-id="${esc(l.id)}">লিংক সেভ করো</button>`:""}<div class="acts"><button class="sm" data-act="up" data-id="${esc(l.id)}">↑</button><button class="sm" data-act="dn" data-id="${esc(l.id)}">↓</button><button class="sm" data-act="rn" data-id="${esc(l.id)}">নাম</button><button class="sm" data-act="tg" data-id="${esc(l.id)}">${l.free?"লকড করো":"ফ্রি করো"}</button><button class="sm d" data-act="del" data-id="${esc(l.id)}">মুছে ফেলো</button></div></div>`).join("");
-      $("pk").onchange=uploadPack;
+      $("pk").onchange=uploadPack;$("upp").onclick=upPdf;
       $("seed").onclick=async()=>{const C3="অধ্যায় ৩ · ডিজিটাল ডিভাইস (লজিক গেইট ও সার্কিট)",C4="অধ্যায় ৪ · ওয়েব ডিজাইন ও HTML",D=[[C3,"ICT-৩ স্লাইড (PDF)","pdf"],[C3,"লজিক গেইট","html"],[C3,"বুলিয়ান অ্যালজেব্রা","html"],[C3,"সংখ্যার রূপান্তর ক্যালকুলেটর","html"],[C4,"ক্লাস ১ স্লাইড (PDF)","pdf"],[C4,"ক্লাস ২ স্লাইড (PDF)","pdf"],[C4,"ক্লাস ১ ভিডিও","video"],[C4,"ক্লাস ২ ভিডিও","video"],[C4,"সব HTML ট্যাগ","html"],[C4,"কোড প্র্যাকটিস ১","html"],[C4,"কোড প্র্যাকটিস ২","html"],[C4,"কোড প্র্যাকটিস ৩","html"],[C4,"CQ ৪.৪ ও ৪.৫ সমাধান","html"]];try{let n=0;for(let i=0;i<D.length;i++){const id="s"+(i+1);if(lessons.some(l=>l.id===id))continue;await setDoc(doc(db,"lessons",id),{id,ch:D[i][0],title:D[i][1],note:"",type:D[i][2],free:false,order:100+i});await setDoc(doc(db,"content",id),{k:kOf(D[i][0]),free:false});n++}$("sdm").className="msg g";$("sdm").textContent=BN(n)+"টি লেসন তৈরি ✅";await loadLessons();render();loadAdmin()}catch(e){$("sdm").className="msg e";$("sdm").textContent="হয়নি: "+(e.code||e.message)}};
       $("bf").onclick=async()=>{try{for(const l of lessons)if(l.type!=="slides")await setDoc(doc(db,"content",l.id),{k:kOf(l.ch),free:!!l.free},{merge:true});$("sdm").className="msg g";$("sdm").textContent="সুরক্ষা আপডেট হয়েছে ✅"}catch(e){$("sdm").className="msg e";$("sdm").textContent="হয়নি: "+(e.code||e.message)}};$("na").onclick=addLesson;$("nva").onclick=addVideo;
     }
@@ -369,11 +370,30 @@ $("abody").onclick=async e=>{
     else if(a==="no"){await updateDoc(doc(db,"requests",t.dataset.rid),{status:"rejected",reason:prompt("বাতিলের কারণ?")||""})}
     else if(a==="vid"){const v=document.querySelector(`[data-vid="${t.dataset.id}"]`).value.trim();await setDoc(doc(db,"content",t.dataset.id),(()=>{const L=lessons.find(x=>x.id===t.dataset.id)||{};return {url:v,free:!!L.free,k:kOf(L.ch)}})());t.textContent="সেভ হয়েছে";t.disabled=false;return}
     else if(a==="tg"){const l=lessons.find(x=>x.id===t.dataset.id);await updateDoc(doc(db,"lessons",l.id),{free:!l.free});if(l.type!=="slides")await setDoc(doc(db,"content",l.id),{free:!l.free,k:kOf(l.ch)},{merge:true});await loadLessons()}
-    else if(a==="del"){if(!confirm("সত্যিই মুছবে?")){t.disabled=false;return}await deleteDoc(doc(db,"lessons",t.dataset.id));try{await deleteDoc(doc(db,"content",t.dataset.id))}catch(_){}await loadLessons()}
+    else if(a==="del"){if(!confirm("সত্যিই মুছবে?")){t.disabled=false;return}await deleteDoc(doc(db,"lessons",t.dataset.id));try{await deleteDoc(doc(db,"content",t.dataset.id))}catch(_){}const L0=lessons.find(x=>x.id===t.dataset.id);if(L0&&L0.type==="slides")for(let i=1;i<=(L0.pages||0);i++)try{await deleteDoc(doc(db,"content",t.dataset.id+"_"+i))}catch(_){}await loadLessons()}
     await loadAdmin();render();
   }catch(err){alert("হয়নি: "+(err.code||err.message));t.disabled=false}
 };
 $("abody").onchange=async e=>{const t=e.target.closest("[data-hf]");if(!t||!t.files[0])return;const L=lessons.find(x=>x.id===t.dataset.hf),f=t.files[0];if(f.size>9e5){alert("ফাইল ৯০০KB-এর বেশি");return}try{await setDoc(doc(db,"content",L.id),{html:await f.text(),free:!!L.free,k:kOf(L.ch)});alert("সেভ হয়েছে ✅")}catch(x){alert("হয়নি: "+(x.code||x.message))}};
+async function upPdf(){
+  const m=$("ppm"),f=$("ppf").files[0],title=$("ppt").value.trim(),ch=$("ppc").value.trim(),fp=+$("ppx").value||0;
+  if(!title||!ch||!f){m.className="msg e";m.textContent="নাম, অধ্যায় ও PDF ফাইল দাও।";return}
+  const bt=$("upp");bt.disabled=true;m.className="msg";
+  try{
+    if(!window.pdfjsLib){await new Promise((ok,no)=>{const sc=document.createElement("script");sc.src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";sc.onload=ok;sc.onerror=no;document.head.appendChild(sc)});pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"}
+    const pdf=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise,id="p"+Date.now(),k=kOf(ch),n=pdf.numPages;
+    for(let i=1;i<=n;i++){
+      m.textContent="আপলোড হচ্ছে… পেজ "+BN(i)+"/"+BN(n)+" (বন্ধ কোরো না)";
+      const pg=await pdf.getPage(i),v0=pg.getViewport({scale:1}),v=pg.getViewport({scale:1100/v0.width}),c=document.createElement("canvas");c.width=v.width;c.height=v.height;
+      await pg.render({canvasContext:c.getContext("2d"),viewport:v}).promise;
+      let q=.75,img=c.toDataURL("image/jpeg",q);while(img.length>9e5&&q>.3){q-=.15;img=c.toDataURL("image/jpeg",q)}
+      await setDoc(doc(db,"content",id+"_"+i),{img,k,free:i<=fp});
+    }
+    await setDoc(doc(db,"lessons",id),{id,ch,title,note:"",type:"slides",pages:n,freePages:fp,free:false,order:lessons.reduce((a,l)=>Math.max(a,l.order||0),0)+1});
+    m.className="msg g";m.textContent="আপলোড শেষ ✅ ("+BN(n)+" পেজ)";await loadLessons();render();loadAdmin();
+  }catch(e){m.className="msg e";m.textContent="হয়নি: "+(e.code||e.message)}
+  bt.disabled=false;
+}
 async function uploadPack(e){
   const m=$("pkm"),f=e.target.files[0];if(!f)return;
   try{

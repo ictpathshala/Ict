@@ -124,20 +124,16 @@ textarea{width:100%;font:inherit;padding:10px;border:1px solid var(--line);borde
 <div id="adm" class="ov" style="position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;z-index:30;padding-top:env(safe-area-inset-top,0px)">
   <div class="top"><button class="btn alt" id="aback">← ফিরে যাও</button><b>অ্যাডমিন প্যানেল</b><button class="sm" id="aref">রিফ্রেশ</button></div>
   <div style="flex:1;overflow:auto;padding:12px 14px calc(30px + env(safe-area-inset-bottom,0px))"><div style="max-width:600px;margin:0 auto">
-    <div class="tabs" id="atabs"><button data-t="u" class="on">ইউজার</button><button data-t="r">রিকোয়েস্ট</button><button data-t="c">কনটেন্ট</button></div>
+    <div class="tabs" id="atabs"><button data-t="u" class="on">ইউজার</button><button data-t="r">রিকোয়েস্ট</button><button data-t="c">কনটেন্ট</button><button data-t="s">সেটিংস</button></div>
     <div id="abody"></div></div></div>
 </div>
 
 <dialog id="dlg">
-  <h3>সব কনটেন্ট আনলক করো</h3>
-  <p style="margin:0;color:var(--mute)">১ মাস, মাত্র <b>১০০ টাকা</b></p>
-  <ol>
-    <li>নিচের যেকোনো নম্বরে ১০০ টাকা <b>Send Money</b> করো।</li>
-    <li>যে নম্বর থেকে পাঠিয়েছ সেটা ও TrxID লিখে রিকোয়েস্ট দাও।</li>
-    <li>টাকা যাচাই হলেই অ্যাপ নিজে আনলক হয়ে যাবে।</li>
-  </ol>
-  <div class="pay"><span>bKash (Personal)<br><b>01908523912</b></span><button class="btn alt" data-copy="01908523912">কপি</button></div>
-  <div class="pay"><span>Nagad (Personal)<br><b>01577653713</b></span><button class="btn alt" data-copy="01577653713">কপি</button></div>
+  <h3>সাবস্ক্রাইব করো</h3>
+  <label>প্ল্যান বেছে নাও (৩০ দিন)</label>
+  <select id="plansel" style="width:100%;font:inherit;padding:11px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);margin:4px 0 8px"></select>
+  <ol><li>নিচের যেকোনো নম্বরে প্ল্যানের টাকা <b>Send Money</b> করো।</li><li>যে নম্বর থেকে পাঠিয়েছ সেটা ও TrxID লিখে রিকোয়েস্ট দাও।</li><li>অ্যাডমিন যাচাই করলেই ৩০ দিনের জন্য আনলক হবে, মেয়াদ শেষে নিজে লক হবে।</li></ol>
+  <div id="payn"></div>
   <div id="lastreq"></div>
   <label>কোন মাধ্যমে পাঠিয়েছ?</label>
   <select id="meth" style="width:100%;font:inherit;padding:11px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);margin:4px 0 8px"><option>bKash</option><option>Nagad</option></select>
@@ -156,13 +152,20 @@ import {getFirestore,doc,getDoc,setDoc,updateDoc,deleteDoc,collection,getDocs,on
 
 const cfg={apiKey:"AIzaSyBr-2bWVfVk14lkiUX5PVxjQUS5iSzemIQ",authDomain:"ict-c718c.firebaseapp.com",projectId:"ict-c718c",storageBucket:"ict-c718c.firebasestorage.app",messagingSenderId:"42724120405",appId:"1:42724120405:web:62431878ea16c63bab01dc"};
 const ADMIN="mdsanu2018@gmail.com";
+const DEF={bkash:"01908523912",nagad:"01577653713",plans:[{id:"p3",name:"অধ্যায় ৩",chs:["3"],price:80},{id:"p4",name:"অধ্যায় ৪",chs:["4"],price:80},{id:"p34",name:"দুই অধ্যায় একসাথে",chs:["3","4"],price:150}]};
+let ST=DEF;
+const kOf=ch=>{const m=String(ch||"").match(/[0-9০-৯]+/);return m?m[0].replace(/[০-৯]/g,d=>"০১২৩৪৫৬৭৮৯".indexOf(d)):""};
+const hasSub=k=>!!me&&(((me.subs||{})[k]||0)>Date.now()||(me.subUntil||0)>Date.now());
+const can=l=>isAdmin||l.free||hasSub(kOf(l.ch));
+const chKeys=()=>[...new Set(lessons.map(l=>kOf(l.ch)).filter(Boolean))];
+async function loadSettings(){try{const x=await getDoc(doc(db,"settings","main"));if(x.exists())ST={...DEF,...x.data()}}catch(e){}}
 const app=initializeApp(cfg),auth=getAuth(app),db=getFirestore(app);
 const $=i=>document.getElementById(i);
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const BN=n=>String(n).replace(/\d/g,d=>"০১২৩৪৫৬৭৮৯"[d]);
 const fd=ms=>ms?new Date(ms).toLocaleDateString("bn-BD",{day:"numeric",month:"short",year:"numeric"}):"-";
 const S=p=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
-const ICON={html:S('<path d="M8 8l-4 4 4 4M16 8l4 4-4 4M14 5l-4 14"/>'),slides:S('<rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/>'),video:S('<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z"/>')};
+const ICON={html:S('<path d="M8 8l-4 4 4 4M16 8l4 4-4 4M14 5l-4 14"/>'),slides:S('<rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/>'),pdf:S('<path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4"/>'),video:S('<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z"/>')};
 const LOCK=S('<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>');
 const ERR={"auth/invalid-credential":"ইমেইল বা পাসওয়ার্ড ঠিক নেই।","auth/wrong-password":"পাসওয়ার্ড ঠিক নেই।","auth/user-not-found":"এই ইমেইলে অ্যাকাউন্ট নেই।","auth/email-already-in-use":"এই ইমেইলে আগেই অ্যাকাউন্ট আছে। লগইন করো।","auth/weak-password":"পাসওয়ার্ড কমপক্ষে ৬ অক্ষর দাও।","auth/invalid-email":"ইমেইল সঠিক নয়।","auth/network-request-failed":"ইন্টারনেট সংযোগ চেক করো।","auth/too-many-requests":"অনেকবার চেষ্টা হয়েছে, একটু পরে আবার করো।","auth/unauthorized-domain":"এই ওয়েবসাইট Firebase-এ অনুমোদিত নয় (Authorized domains-এ যোগ করতে হবে)।"};
 
@@ -202,8 +205,9 @@ onAuthStateChanged(auth,async u=>{
     const r=doc(db,"users",u.uid),s=await getDoc(r);
     if(!s.exists())await setDoc(r,{email:u.email,createdAt:Date.now(),lastLogin:Date.now(),subUntil:0});
     else await updateDoc(r,{lastLogin:Date.now()});
-    unsubMe=onSnapshot(r,d=>{me=d.data()||{};sub=(me.subUntil||0)>Date.now();render()});
-    await loadLessons();
+    unsubMe=onSnapshot(r,d=>{me=d.data()||{};if(me.blocked&&!isAdmin){alert("তোমার অ্যাকাউন্ট বন্ধ করা হয়েছে।");signOut(auth);return}sub=Object.values(me.subs||{}).some(v=>v>Date.now())||(me.subUntil||0)>Date.now();render()});
+    await loadSettings();await loadLessons();
+    clearInterval(window.hb);const hb=()=>updateDoc(doc(db,"users",u.uid),{lastSeen:Date.now()}).catch(()=>{});hb();window.hb=setInterval(hb,120000);
   }catch(e){console.error(e)}
   show("app");render();
 });
@@ -222,14 +226,14 @@ function render(){
   const until=me&&me.subUntil;
   let plan="";
   if(isAdmin)plan=`<div class="k">অ্যাডমিন</div><h2>সব কিছু ফ্রি, পূর্ণ নিয়ন্ত্রণ</h2><p>ইউজার, পেমেন্ট রিকোয়েস্ট ও কনটেন্ট এখান থেকে সামলাও।</p><button class="gold" data-adm="1">অ্যাডমিন প্যানেল খোলো</button>`;
-  else if(sub)plan=`<div class="k">প্রিমিয়াম সক্রিয়</div><h2>সব কনটেন্ট আনলকড</h2><p>মেয়াদ: ${fd(until)} পর্যন্ত। শেষ হলে আবার সাবস্ক্রাইব করো।</p>`;
-  else plan=`<div class="k">${until?"মেয়াদ শেষ হয়েছে":"ফ্রি ডেমো চলছে"}</div><h2>সব লেসন আনলক করো</h2><p>ভিডিও ক্লাস, সব অনুশীলন ও সমাধান, পুরো স্লাইড নোট।</p><div class="pr"><div class="am">১০০৳ <small>/ মাস</small></div><button class="gold" data-pay="1">সাবস্ক্রাইব করো</button></div>`;
+  else if(sub){const ex=Object.entries(me.subs||{}).filter(e=>e[1]>Date.now()).map(e=>{const d=Math.ceil((e[1]-Date.now())/864e5);return `অধ্যায় ${BN(e[0])}: ${BN(d)} দিন বাকি`+(d<=3?" ⚠️ শিগগিরই শেষ":"")});if((me.subUntil||0)>Date.now())ex.push("মেয়াদ: "+fd(me.subUntil)+" পর্যন্ত");plan=`<div class="k">প্রিমিয়াম সক্রিয়</div><h2>${ex.join("<br>")}</h2><p>মেয়াদ শেষ হলে নিজে থেকে লক হবে।</p><button class="gold" data-pay="1">নবায়ন / আরেক অধ্যায় নাও</button>`}
+  else plan=`<div class="k">${until?"মেয়াদ শেষ হয়েছে":"ফ্রি ডেমো চলছে"}</div><h2>সব লেসন আনলক করো</h2><p>ভিডিও ক্লাস, সব অনুশীলন ও সমাধান, পুরো স্লাইড নোট।</p><div class="pr"><div class="am">${BN(Math.min(...ST.plans.map(p=>p.price)))}৳ <small>থেকে / মাস</small></div><button class="gold" data-pay="1">সাবস্ক্রাইব করো</button></div>`;
   $("plan").innerHTML=plan;
   if(!lessons.length){$("list").innerHTML=`<p class="sub" style="margin-top:20px">কনটেন্ট শীঘ্রই আসছে।</p>`;return}
   let h="",cur="";
   lessons.forEach(it=>{
     if(it.ch!==cur){cur=it.ch;const p=cur.split(" · "),n=lessons.filter(x=>x.ch===cur).length;h+=`<div class="chh"><span class="num">${esc((p[0]||"").replace("অধ্যায় ",""))}</span><div><b>${esc(p[1]||p[0])}</b><small>${BN(n)}টি লেসন</small></div></div>`}
-    const open=isAdmin||sub||it.free;
+    const open=can(it);
     h+=`<button class="row" data-id="${esc(it.id)}"><span class="ic">${ICON[it.type]||ICON.html}</span><span><b>${esc(it.title)}</b><small>${esc(it.note||"")}</small></span><span class="tg ${open?"":"l"}">${open?(it.free?"ফ্রি":"আনলকড"):LOCK+"লকড"}</span></button>`;
   });
   $("list").innerHTML=h;
@@ -238,24 +242,25 @@ $("plan").onclick=e=>{if(e.target.closest("[data-pay]"))openPay();if(e.target.cl
 $("list").onclick=e=>{const b=e.target.closest(".row");if(b)openLesson(lessons.find(x=>x.id===b.dataset.id))};
 
 /* ---------- Viewer ---------- */
-function lockCard(){return `<div class="lock"><div class="lk">${LOCK}</div><h3 style="margin-top:0">এটি সাবস্ক্রাইবারদের জন্য</h3><p>মাত্র ১০০ টাকায় ১ মাস সব অধ্যায়, ভিডিও ও অনুশীলন।</p><button class="gold" onclick="document.dispatchEvent(new Event('paynow'))">আনলক করো</button></div>`}
+function lockCard(){return `<div class="lock"><div class="lk">${LOCK}</div><h3 style="margin-top:0">এটি সাবস্ক্রাইবারদের জন্য</h3><p>সাবস্ক্রাইব করে ৩০ দিনের জন্য এই অধ্যায় আনলক করো।</p><button class="gold" onclick="document.dispatchEvent(new Event('paynow'))">আনলক করো</button></div>`}
 document.addEventListener("paynow",()=>openPay());
 $("back").onclick=()=>{$("view").classList.remove("on");$("stage").innerHTML=""};
 async function openLesson(l){
   if(!l)return;const st=$("stage");
   $("vt").textContent=l.title;$("view").classList.add("on");st.innerHTML="";
   if(l.type==="slides")return slides(l);
-  if(!(isAdmin||sub||l.free)){st.innerHTML=lockCard();return}
+  if(!can(l)){st.innerHTML=lockCard();return}
   st.innerHTML=`<p class="sub" style="padding:20px">লোড হচ্ছে…</p>`;
   try{
     const s=await getDoc(doc(db,"content",l.id));
     if(!s.exists()){st.innerHTML=`<p class="sub" style="padding:20px">এই লেসন শীঘ্রই আসছে।</p>`;return}
     const d=s.data();st.innerHTML="";
+    if(l.type==="pdf"){const g=(d.url||"").match(/\/d\/([\w-]+)|[?&]id=([\w-]+)/);st.innerHTML=g?`<iframe src="https://drive.google.com/file/d/${g[1]||g[2]}/preview" allowfullscreen style="width:100%;height:100%;border:0"></iframe>`:`<p class="sub" style="padding:20px">PDF শীঘ্রই আসছে।</p>`;return}
     if(l.type==="video"){
       const u=(d.url||"").trim(),y=u.match(/(?:youtu\.be\/|v=|embed\/|shorts\/|live\/)([\w-]{11})/),g=u.match(/drive\.google\.com\/(?:file\/d\/|open\?id=)([\w-]+)/);
       const hint=isAdmin?`<div class="banner" style="margin:0;border-radius:0;font-size:.8rem">ভিডিও না চললে: YouTube Studio → ভিডিও → Show more → <b>Allow embedding</b> চালু করো। Google Drive হলে শেয়ার "Anyone with the link" রাখো।</div>`:"";
       const fr=src=>`<div style="display:flex;flex-direction:column;height:100%"><iframe src="${src}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="flex:1;width:100%;border:0;background:#000"></iframe>${hint}</div>`;
-      if(y)st.innerHTML=fr(`https://www.youtube.com/embed/${y[1]}?rel=0&playsinline=1&modestbranding=1`);
+      if(y)st.innerHTML=fr(`https://www.youtube-nocookie.com/embed/${y[1]}?rel=0&playsinline=1&modestbranding=1`);
       else if(g)st.innerHTML=fr(`https://drive.google.com/file/d/${g[1]}/preview`);
       else if(u)st.innerHTML=`<video controls playsinline src="${esc(u)}"></video>`;
       else st.innerHTML=`<p class="sub" style="padding:20px">ভিডিও শীঘ্রই আসছে।</p>`;
@@ -265,7 +270,7 @@ async function openLesson(l){
 function slides(l){
   const st=$("stage"),n=l.pages||1,fp=l.freePages||0,cache={};let i=1;
   const draw=async()=>{
-    const ok=isAdmin||sub||i<=fp;
+    const ok=can(l)||i<=fp;
     st.innerHTML=`<div class="sl"><div class="im" id="im">${ok?"লোড হচ্ছে…":lockCard()}</div><div class="nav"><button class="btn alt" id="pv">আগের</button><span>${BN(i)} / ${BN(n)}</span><button class="btn" id="nx">পরের</button></div></div>`;
     $("pv").onclick=()=>{if(i>1){i--;draw()}};$("nx").onclick=()=>{if(i<n){i++;draw()}};
     if(!ok)return;const at=i;
@@ -277,9 +282,11 @@ function slides(l){
 }
 
 /* ---------- Payment request ---------- */
-document.querySelectorAll("[data-copy]").forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(b.dataset.copy);b.textContent="কপি হয়েছে"}catch(e){b.textContent="হাতে কপি করো"}});
+$("dlg").addEventListener("click",async e=>{const b=e.target.closest("[data-copy]");if(!b)return;try{await navigator.clipboard.writeText(b.dataset.copy);b.textContent="কপি হয়েছে"}catch(x){b.textContent="হাতে কপি করো"}});
 $("cl").onclick=()=>$("dlg").close();
 async function openPay(){
+  $("plansel").innerHTML=ST.plans.map(p=>`<option value="${esc(p.id)}">${esc(p.name)} — ${BN(p.price)} টাকা</option>`).join("");
+  $("payn").innerHTML=[["bKash (Personal)",ST.bkash],["Nagad (Personal)",ST.nagad]].map(x=>`<div class="pay"><span>${x[0]}<br><b>${esc(x[1])}</b></span><button class="btn alt" data-copy="${esc(x[1])}">কপি</button></div>`).join("");
   $("m1").textContent="";$("lastreq").innerHTML="";$("dlg").showModal();
   try{
     const s=await getDocs(query(collection(db,"requests"),where("uid","==",user.uid)));
@@ -293,9 +300,9 @@ $("sendreq").onclick=async()=>{
   if(ph.length!==11||ph[0]!=="0"){m.className="msg e";m.textContent="১১ ডিজিটের সঠিক নম্বর দাও।";return}
   if(trx.length<6){m.className="msg e";m.textContent="TrxID লিখতে হবে।";return}
   try{
-    await addDoc(collection(db,"requests"),{uid:user.uid,email:user.email,phone:ph,trx,method:$("meth").value,status:"pending",createdAt:Date.now()});
+    const P=ST.plans.find(p=>p.id===$("plansel").value)||ST.plans[0];await setDoc(doc(db,"requests","t_"+trx),{uid:user.uid,email:user.email,phone:ph,trx,method:$("meth").value,plan:P.id,planName:P.name,chs:P.chs,price:P.price,status:"pending",createdAt:Date.now()});
     m.className="msg g";m.textContent="রিকোয়েস্ট জমা হয়েছে। টাকা যাচাই হলে নিজে থেকে আনলক হবে।";$("trx").value="";
-  }catch(e){m.className="msg e";m.textContent="পাঠানো যায়নি, আবার চেষ্টা করো।"}
+  }catch(e){m.className="msg e";m.textContent="পাঠানো যায়নি। এই TrxID আগেই ব্যবহার হয়ে থাকতে পারে।"}
 };
 
 /* ---------- Admin ---------- */
@@ -303,9 +310,10 @@ $("aback").onclick=()=>$("adm").style.display="none";
 $("aref").onclick=()=>loadAdmin();
 document.querySelectorAll("#atabs button").forEach(b=>b.onclick=()=>{atab=b.dataset.t;document.querySelectorAll("#atabs button").forEach(x=>x.classList.toggle("on",x===b));loadAdmin()});
 function openAdmin(){$("adm").style.display="flex";loadAdmin()}
-async function approve(rid,uid){
-  const us=await getDoc(doc(db,"users",uid)),cur=us.exists()?(us.data().subUntil||0):0;
-  await updateDoc(doc(db,"users",uid),{subUntil:Math.max(Date.now(),cur)+30*864e5});
+async function approve(rid,uid,chs){
+  const us=await getDoc(doc(db,"users",uid)),subs=(us.exists()&&us.data().subs)||{},u={};
+  chs.forEach(k=>{u["subs."+k]=Math.max(Date.now(),subs[k]||0)+30*864e5});
+  await updateDoc(doc(db,"users",uid),u);
   if(rid)await updateDoc(doc(db,"requests",rid),{status:"approved",approvedAt:Date.now()});
 }
 async function loadAdmin(){
@@ -314,47 +322,58 @@ async function loadAdmin(){
     if(atab==="u"){
       const [us,rs]=await Promise.all([getDocs(collection(db,"users")),getDocs(collection(db,"requests"))]);
       const U=us.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
-      const now=Date.now(),act=U.filter(x=>x.subUntil>now).length,exp=U.filter(x=>x.subUntil&&x.subUntil<=now).length,pend=rs.docs.filter(d=>d.data().status==="pending").length;
-      b.innerHTML=`<div class="stats"><div class="stat"><b>${BN(U.length)}</b><small>মোট ইউজার</small></div><div class="stat"><b>${BN(act)}</b><small>সক্রিয় সাবস্ক্রাইবার</small></div><div class="stat"><b>${BN(U.length-act-exp)}</b><small>কখনো সাবস্ক্রাইব করেনি</small></div><div class="stat"><b>${BN(pend)}</b><small>পেন্ডিং রিকোয়েস্ট</small></div></div>`+
-      U.map(x=>{const st=x.subUntil>now?`<span class="bd g">সক্রিয় · ${fd(x.subUntil)} পর্যন্ত</span>`:x.subUntil?`<span class="bd r">মেয়াদ শেষ · ${fd(x.subUntil)}</span>`:`<span class="bd y">সাবস্ক্রাইব করেনি</span>`;
-        return `<div class="it"><b>${esc(x.email)}</b><small>অ্যাকাউন্ট: ${fd(x.createdAt)} · শেষ লগইন: ${fd(x.lastLogin)}</small><div style="margin-top:6px">${st}</div><div class="acts"><button class="sm p" data-act="add" data-uid="${esc(x.id)}">+৩০ দিন</button><button class="sm d" data-act="off" data-uid="${esc(x.id)}">বাতিল করো</button></div></div>`}).join("")||`<p class="sub">এখনো কেউ নেই।</p>`;
+      const now=Date.now(),isAct=x=>x.subUntil>now||Object.values(x.subs||{}).some(v=>v>now),onl=U.filter(x=>x.lastSeen>now-3e5).length,sd=new Date().setHours(0,0,0,0),ms=new Date(new Date().getFullYear(),new Date().getMonth(),1).getTime(),tl=U.filter(x=>x.lastLogin>=sd).length,ap=rs.docs.map(d=>d.data()).filter(r=>r.status==="approved"),sm=f=>ap.filter(f).reduce((a,r)=>a+(r.price||0),0),rev={t:sm(()=>1),m:sm(r=>r.approvedAt>=ms),d:sm(r=>r.approvedAt>=sd)},act=U.filter(isAct).length,pend=rs.docs.filter(d=>d.data().status==="pending").length;
+      b.innerHTML=`<div class="stats"><div class="stat"><b>${BN(U.length)}</b><small>মোট ইউজার</small></div><div class="stat"><b>${BN(act)}</b><small>সক্রিয় সাবস্ক্রাইবার</small></div><div class="stat"><b>${BN(onl)}</b><small>এখন অনলাইন</small></div><div class="stat"><b>${BN(tl)}</b><small>আজ লগইন</small></div><div class="stat"><b>${BN(rev.t)}৳</b><small>মোট আয়</small></div><div class="stat"><b>${BN(rev.m)}৳</b><small>এই মাসে</small></div><div class="stat"><b>${BN(rev.d)}৳</b><small>আজ</small></div><div class="stat"><b>${BN(pend)}</b><small>পেন্ডিং রিকোয়েস্ট</small></div></div>`+
+      U.map(x=>{const st=isAct(x)?`<span class="bd g">সক্রিয়: ${Object.entries(x.subs||{}).filter(e=>e[1]>now).map(e=>"অ."+BN(e[0])+" → "+fd(e[1])).join(", ")}</span>`:`<span class="bd y">সক্রিয় নেই</span>`;
+        return `<div class="it"><b>${esc(x.email)}</b><small>অ্যাকাউন্ট: ${fd(x.createdAt)} · শেষ লগইন: ${fd(x.lastLogin)}</small><div style="margin-top:6px">${st}</div><div class="acts"><button class="sm p" data-act="add" data-uid="${esc(x.id)}">+৩০ দিন</button><button class="sm d" data-act="off" data-uid="${esc(x.id)}">বাতিল করো</button><button class="sm" data-act="blk" data-b="${x.blocked?1:0}" data-uid="${esc(x.id)}">${x.blocked?"আনব্লক":"ব্লক"}</button></div></div>`}).join("")||`<p class="sub">এখনো কেউ নেই।</p>`;
     }else if(atab==="r"){
       const s=await getDocs(collection(db,"requests"));
       const R=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,c)=>(a.status==="pending"?0:1)-(c.status==="pending"?0:1)||c.createdAt-a.createdAt);
       b.innerHTML=R.map(r=>{const t={pending:["y","পেন্ডিং"],approved:["g","অনুমোদিত"],rejected:["r","বাতিল"]}[r.status]||["y",r.status];
-        return `<div class="it"><b>${esc(r.email)}</b> <span class="bd ${t[0]}">${t[1]}</span><small>${esc(r.method)} · নম্বর: ${esc(r.phone)} · TrxID: <b>${esc(r.trx)}</b></small><small>${fd(r.createdAt)}</small>${r.status==="pending"?`<div class="acts"><button class="sm p" data-act="ok" data-rid="${esc(r.id)}" data-uid="${esc(r.uid)}">টাকা পেয়েছি, ৩০ দিন আনলক</button><button class="sm d" data-act="no" data-rid="${esc(r.id)}">বাতিল</button></div>`:""}</div>`}).join("")||`<p class="sub">কোনো রিকোয়েস্ট নেই।</p>`;
+        return `<div class="it"><b>${esc(r.email)}</b> <span class="bd ${t[0]}">${t[1]}</span><small>${esc(r.planName||"")} ${r.price?BN(r.price)+"৳":""} · ${esc(r.method)} · নম্বর: ${esc(r.phone)} · TrxID: <b>${esc(r.trx)}</b></small><small>${fd(r.createdAt)}</small>${r.status==="pending"?`<div class="acts"><button class="sm p" data-act="ok" data-rid="${esc(r.id)}" data-uid="${esc(r.uid)}" data-chs="${esc((r.chs||chKeys()).join(","))}">টাকা পেয়েছি, ৩০ দিন আনলক</button><button class="sm d" data-act="no" data-rid="${esc(r.id)}">বাতিল</button></div>`:""}</div>`}).join("")||`<p class="sub">কোনো রিকোয়েস্ট নেই।</p>`;
+    }else if(atab==="s"){
+      b.innerHTML=`<div class="card"><b>পেমেন্ট নম্বর</b><input id="sb" value="${esc(ST.bkash)}" placeholder="bKash"><input id="sn" value="${esc(ST.nagad)}" placeholder="Nagad"><b>প্ল্যান (৩০ দিন)</b><small style="color:var(--mute);display:block">নাম · অধ্যায় নম্বর (কমা দিয়ে, যেমন ৩,৪) · টাকা</small>${ST.plans.map((p,i)=>`<div class="it"><input data-pn="${i}" value="${esc(p.name)}"><input data-pc="${i}" value="${esc(p.chs.join(","))}"><input data-pp="${i}" type="number" value="${p.price}"></div>`).join("")}<button class="sm" id="addp">+ নতুন প্ল্যান</button> <button class="btn" id="svs">সেভ করো</button><div class="msg" id="sm"></div></div>`;
+      const rd=()=>({bkash:$("sb").value.trim(),nagad:$("sn").value.trim(),plans:ST.plans.map((p,i)=>({id:p.id,name:document.querySelector(`[data-pn="${i}"]`).value.trim(),chs:document.querySelector(`[data-pc="${i}"]`).value.split(",").map(kOf).filter(Boolean),price:+document.querySelector(`[data-pp="${i}"]`).value||0}))});
+      $("addp").onclick=()=>{ST={...ST,...rd()};ST.plans.push({id:"p"+Date.now(),name:"নতুন প্ল্যান",chs:[],price:80});loadAdmin()};
+      $("svs").onclick=async()=>{try{ST={...ST,...rd()};await setDoc(doc(db,"settings","main"),ST);$("sm").className="msg g";$("sm").textContent="সেভ হয়েছে ✅"}catch(e){$("sm").className="msg e";$("sm").textContent="হয়নি: "+(e.code||e.message)}};
     }else{
       const chs=[...new Set(lessons.map(l=>l.ch))];
-      b.innerHTML=`<div class="card" style="margin-bottom:12px"><b>কনটেন্ট প্যাক আপলোড</b><small style="color:var(--mute);display:block;margin:4px 0 8px">content-pack.json ফাইলটি বেছে নাও (সব লেসন একসাথে উঠবে)।</small><input type="file" id="pk" accept=".json"><div class="msg" id="pkm"></div></div>
+      b.innerHTML=`<div class="card" style="margin-bottom:12px"><b>শুরুর সেটআপ (একবারই)</b><small style="color:var(--mute);display:block;margin:4px 0 8px">১) ডিফল্ট ১৩টি খালি লেসন তৈরি। ২) পুরোনো কনটেন্টে সুরক্ষা ট্যাগ বসানো।</small><button class="sm p" id="seed">ডিফল্ট লেসন তৈরি করো</button> <button class="sm" id="bf">সুরক্ষা আপডেট</button><div class="msg" id="sdm"></div></div><div class="card" style="margin-bottom:12px"><b>কনটেন্ট প্যাক আপলোড</b><small style="color:var(--mute);display:block;margin:4px 0 8px">content-pack.json ফাইলটি বেছে নাও (সব লেসন একসাথে উঠবে)।</small><input type="file" id="pk" accept=".json"><div class="msg" id="pkm"></div></div>
       <div class="card" style="margin-bottom:12px"><b>নতুন লেসন যোগ করো (HTML ফাইল)</b>
         <input id="nt" placeholder="লেসনের নাম"><input id="nn" placeholder="ছোট বিবরণ (ঐচ্ছিক)">
         <input id="nc" list="chl" placeholder="অধ্যায়, যেমন: অধ্যায় ৫ · ডাটাবেস"><datalist id="chl">${chs.map(c=>`<option value="${esc(c)}">`).join("")}</datalist>
         <label><input type="checkbox" id="nf" style="width:auto"> ফ্রি ডেমো হিসেবে রাখো</label>
         <input type="file" id="nh" accept=".html,.htm"><button class="btn" id="na" style="margin-top:6px">যোগ করো</button><div class="msg" id="nm"></div></div>
-      <div class="card" style="margin-bottom:12px"><b>নতুন ভিডিও লেসন যোগ করো</b><small style="color:var(--mute);display:block;margin:4px 0 8px">প্রতিটি ভিডিওর জন্য আলাদা করে যোগ করো, আগেরগুলো থাকবে।</small>
+      <div class="card" style="margin-bottom:12px"><b>নতুন ভিডিও / PDF লেসন যোগ করো</b><small style="color:var(--mute);display:block;margin:4px 0 8px">প্রতিটি ভিডিওর জন্য আলাদা করে যোগ করো, আগেরগুলো থাকবে।</small>
         <input id="vt1" placeholder="ভিডিওর নাম"><input id="vn1" placeholder="ছোট বিবরণ (ঐচ্ছিক)">
         <input id="vc1" list="chl" placeholder="অধ্যায়, যেমন: অধ্যায় ৪ · ওয়েব ডিজাইন ও HTML">
-        <input id="vu1" placeholder="YouTube / Google Drive / mp4 লিংক" autocapitalize="off">
+        <select id="vty" style="width:100%;font:inherit;padding:11px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);margin:4px 0 8px"><option value="video">ভিডিও (YouTube লিংক)</option><option value="pdf">PDF (Google Drive লিংক)</option></select><input id="vu1" placeholder="YouTube বা Google Drive লিংক" autocapitalize="off">
         <label><input type="checkbox" id="vf1" style="width:auto"> ফ্রি ডেমো হিসেবে রাখো</label>
         <button class="btn" id="nva" style="margin-top:6px">ভিডিও যোগ করো</button><div class="msg" id="vm1"></div></div>
-      <b>সব লেসন</b>`+lessons.map(l=>`<div class="it"><b>${esc(l.title)}</b> <span class="bd ${l.free?"g":"y"}">${l.free?"ফ্রি":"লকড"}</span><small>${esc(l.ch)} · ${esc(l.type)}</small>${l.type==="video"?`<input data-vid="${esc(l.id)}" placeholder="YouTube বা ভিডিও লিংক বসাও"><button class="sm p" data-act="vid" data-id="${esc(l.id)}">লিংক সেভ করো</button>`:""}<div class="acts"><button class="sm" data-act="tg" data-id="${esc(l.id)}">${l.free?"লকড করো":"ফ্রি করো"}</button><button class="sm d" data-act="del" data-id="${esc(l.id)}">মুছে ফেলো</button></div></div>`).join("");
-      $("pk").onchange=uploadPack;$("na").onclick=addLesson;$("nva").onclick=addVideo;
+      <b>সব লেসন</b>`+lessons.map(l=>`<div class="it"><b>${esc(l.title)}</b> <span class="bd ${l.free?"g":"y"}">${l.free?"ফ্রি":"লকড"}</span><small>${esc(l.ch)} · ${esc(l.type)}</small>${l.type==="html"?`<input type="file" accept=".html,.htm" data-hf="${esc(l.id)}">`:""}${(l.type==="video"||l.type==="pdf")?`<input data-vid="${esc(l.id)}" placeholder="লিংক বসাও (YouTube / Drive)"><button class="sm p" data-act="vid" data-id="${esc(l.id)}">লিংক সেভ করো</button>`:""}<div class="acts"><button class="sm" data-act="up" data-id="${esc(l.id)}">↑</button><button class="sm" data-act="dn" data-id="${esc(l.id)}">↓</button><button class="sm" data-act="rn" data-id="${esc(l.id)}">নাম</button><button class="sm" data-act="tg" data-id="${esc(l.id)}">${l.free?"লকড করো":"ফ্রি করো"}</button><button class="sm d" data-act="del" data-id="${esc(l.id)}">মুছে ফেলো</button></div></div>`).join("");
+      $("pk").onchange=uploadPack;
+      $("seed").onclick=async()=>{const C3="অধ্যায় ৩ · ডিজিটাল ডিভাইস (লজিক গেইট ও সার্কিট)",C4="অধ্যায় ৪ · ওয়েব ডিজাইন ও HTML",D=[[C3,"ICT-৩ স্লাইড (PDF)","pdf"],[C3,"লজিক গেইট","html"],[C3,"বুলিয়ান অ্যালজেব্রা","html"],[C3,"সংখ্যার রূপান্তর ক্যালকুলেটর","html"],[C4,"ক্লাস ১ স্লাইড (PDF)","pdf"],[C4,"ক্লাস ২ স্লাইড (PDF)","pdf"],[C4,"ক্লাস ১ ভিডিও","video"],[C4,"ক্লাস ২ ভিডিও","video"],[C4,"সব HTML ট্যাগ","html"],[C4,"কোড প্র্যাকটিস ১","html"],[C4,"কোড প্র্যাকটিস ২","html"],[C4,"কোড প্র্যাকটিস ৩","html"],[C4,"CQ ৪.৪ ও ৪.৫ সমাধান","html"]];try{let n=0;for(let i=0;i<D.length;i++){const id="s"+(i+1);if(lessons.some(l=>l.id===id))continue;await setDoc(doc(db,"lessons",id),{id,ch:D[i][0],title:D[i][1],note:"",type:D[i][2],free:false,order:100+i});await setDoc(doc(db,"content",id),{k:kOf(D[i][0]),free:false});n++}$("sdm").className="msg g";$("sdm").textContent=BN(n)+"টি লেসন তৈরি ✅";await loadLessons();render();loadAdmin()}catch(e){$("sdm").className="msg e";$("sdm").textContent="হয়নি: "+(e.code||e.message)}};
+      $("bf").onclick=async()=>{try{for(const l of lessons)if(l.type!=="slides")await setDoc(doc(db,"content",l.id),{k:kOf(l.ch),free:!!l.free},{merge:true});$("sdm").className="msg g";$("sdm").textContent="সুরক্ষা আপডেট হয়েছে ✅"}catch(e){$("sdm").className="msg e";$("sdm").textContent="হয়নি: "+(e.code||e.message)}};$("na").onclick=addLesson;$("nva").onclick=addVideo;
     }
   }catch(e){b.innerHTML=`<p class="msg e">লোড হয়নি: ${esc(e.code||e.message)}<br>Firestore Rules ঠিকমতো বসানো আছে কি না দেখো এবং ইমেইল ভেরিফাই হয়েছে কি না।</p>`}
 }
 $("abody").onclick=async e=>{
   const t=e.target.closest("[data-act]");if(!t)return;const a=t.dataset.act;t.disabled=true;
   try{
-    if(a==="add"){await approve(null,t.dataset.uid)}
-    else if(a==="off"){await updateDoc(doc(db,"users",t.dataset.uid),{subUntil:0})}
-    else if(a==="ok"){await approve(t.dataset.rid,t.dataset.uid)}
-    else if(a==="no"){await updateDoc(doc(db,"requests",t.dataset.rid),{status:"rejected"})}
-    else if(a==="vid"){const v=document.querySelector(`[data-vid="${t.dataset.id}"]`).value.trim();await setDoc(doc(db,"content",t.dataset.id),{url:v,free:!!(lessons.find(x=>x.id===t.dataset.id)||{}).free});t.textContent="সেভ হয়েছে";t.disabled=false;return}
-    else if(a==="tg"){const l=lessons.find(x=>x.id===t.dataset.id);await updateDoc(doc(db,"lessons",l.id),{free:!l.free});if(l.type==="html"||l.type==="video")await setDoc(doc(db,"content",l.id),{free:!l.free},{merge:true});await loadLessons()}
+    if(a==="add"){await approve(null,t.dataset.uid,chKeys())}
+    else if(a==="blk"){await updateDoc(doc(db,"users",t.dataset.uid),{blocked:t.dataset.b!=="1"})}
+    else if(a==="up"||a==="dn"){const i=lessons.findIndex(x=>x.id===t.dataset.id),j=a==="up"?i-1:i+1;if(lessons[j]){const A=lessons[i],B=lessons[j];await updateDoc(doc(db,"lessons",A.id),{order:B.order});await updateDoc(doc(db,"lessons",B.id),{order:A.order})}await loadLessons()}
+    else if(a==="rn"){const L=lessons.find(x=>x.id===t.dataset.id),n=prompt("নতুন নাম",L.title);if(n)await updateDoc(doc(db,"lessons",L.id),{title:n});await loadLessons()}
+    else if(a==="off"){await updateDoc(doc(db,"users",t.dataset.uid),{subUntil:0,subs:{}})}
+    else if(a==="ok"){await approve(t.dataset.rid,t.dataset.uid,t.dataset.chs.split(",").filter(Boolean))}
+    else if(a==="no"){await updateDoc(doc(db,"requests",t.dataset.rid),{status:"rejected",reason:prompt("বাতিলের কারণ?")||""})}
+    else if(a==="vid"){const v=document.querySelector(`[data-vid="${t.dataset.id}"]`).value.trim();await setDoc(doc(db,"content",t.dataset.id),(()=>{const L=lessons.find(x=>x.id===t.dataset.id)||{};return {url:v,free:!!L.free,k:kOf(L.ch)}})());t.textContent="সেভ হয়েছে";t.disabled=false;return}
+    else if(a==="tg"){const l=lessons.find(x=>x.id===t.dataset.id);await updateDoc(doc(db,"lessons",l.id),{free:!l.free});if(l.type!=="slides")await setDoc(doc(db,"content",l.id),{free:!l.free,k:kOf(l.ch)},{merge:true});await loadLessons()}
     else if(a==="del"){if(!confirm("সত্যিই মুছবে?")){t.disabled=false;return}await deleteDoc(doc(db,"lessons",t.dataset.id));try{await deleteDoc(doc(db,"content",t.dataset.id))}catch(_){}await loadLessons()}
     await loadAdmin();render();
   }catch(err){alert("হয়নি: "+(err.code||err.message));t.disabled=false}
 };
+$("abody").onchange=async e=>{const t=e.target.closest("[data-hf]");if(!t||!t.files[0])return;const L=lessons.find(x=>x.id===t.dataset.hf),f=t.files[0];if(f.size>9e5){alert("ফাইল ৯০০KB-এর বেশি");return}try{await setDoc(doc(db,"content",L.id),{html:await f.text(),free:!!L.free,k:kOf(L.ch)});alert("সেভ হয়েছে ✅")}catch(x){alert("হয়নি: "+(x.code||x.message))}};
 async function uploadPack(e){
   const m=$("pkm"),f=e.target.files[0];if(!f)return;
   try{
@@ -369,17 +388,18 @@ async function addVideo(){
   if(!title||!ch||!url){m.className="msg e";m.textContent="নাম, অধ্যায় ও ভিডিও লিংক দাও।";return}
   try{
     const free=$("vf1").checked,id="v"+Date.now(),order=lessons.reduce((a,l)=>Math.max(a,l.order||0),0)+1;
-    await setDoc(doc(db,"content",id),{url,free});
-    await setDoc(doc(db,"lessons",id),{id,ch,title,note:$("vn1").value.trim(),type:"video",free,order});
+    await setDoc(doc(db,"content",id),{url,free,k:kOf(ch)});
+    await setDoc(doc(db,"lessons",id),{id,ch,title,note:$("vn1").value.trim(),type:$("vty").value,free,order});
     m.className="msg g";m.textContent="ভিডিও যোগ হয়েছে ✅";await loadLessons();render();loadAdmin();
   }catch(err){m.className="msg e";m.textContent="হয়নি: "+(err.code||err.message)}
 }
 async function addLesson(){
   const m=$("nm"),f=$("nh").files[0],title=$("nt").value.trim(),ch=$("nc").value.trim();
   if(!title||!ch||!f){m.className="msg e";m.textContent="নাম, অধ্যায় ও HTML ফাইল দাও।";return}
+  if(f.size>9e5){m.className="msg e";m.textContent="ফাইল ৯০০KB-এর বেশি, ছোট করো।";return}
   try{
     const html=await f.text(),free=$("nf").checked,id="l"+Date.now(),order=lessons.reduce((a,l)=>Math.max(a,l.order||0),0)+1;
-    await setDoc(doc(db,"content",id),{html,free});
+    await setDoc(doc(db,"content",id),{html,free,k:kOf(ch)});
     await setDoc(doc(db,"lessons",id),{id,ch,title,note:$("nn").value.trim(),type:"html",free,order});
     m.className="msg g";m.textContent="যোগ হয়েছে ✅";await loadLessons();render();loadAdmin();
   }catch(err){m.className="msg e";m.textContent="হয়নি: "+(err.code||err.message)}

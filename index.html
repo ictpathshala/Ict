@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-<meta charset="utf-8"><link rel="manifest" href="manifest.json">
-<script>navigator.serviceWorker.register('sw.js')</script>
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ICT পাঠশালা</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0d1440">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap">
 <style>
 :root{--bg:#f1f3f9;--card:#fff;--ink:#0f1630;--mute:#5a6585;--acc:#2f4bd8;--gold:#c8921a;--goldbg:#fbf1d6;--line:#dfe4f0;--ok:#0e7a57;--sh:0 1px 2px rgba(15,22,48,.06),0 8px 24px -12px rgba(15,22,48,.18);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -249,8 +252,11 @@ async function openLesson(l){
     if(!s.exists()){st.innerHTML=`<p class="sub" style="padding:20px">এই লেসন শীঘ্রই আসছে।</p>`;return}
     const d=s.data();st.innerHTML="";
     if(l.type==="video"){
-      const u=d.url||"",y=u.match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/);
-      if(y)st.innerHTML=`<iframe src="https://www.youtube.com/embed/${y[1]}?rel=0" allow="fullscreen; picture-in-picture" allowfullscreen style="width:100%;height:100%;border:0"></iframe>`;
+      const u=(d.url||"").trim(),y=u.match(/(?:youtu\.be\/|v=|embed\/|shorts\/|live\/)([\w-]{11})/),g=u.match(/drive\.google\.com\/(?:file\/d\/|open\?id=)([\w-]+)/);
+      const hint=isAdmin?`<div class="banner" style="margin:0;border-radius:0;font-size:.8rem">ভিডিও না চললে: YouTube Studio → ভিডিও → Show more → <b>Allow embedding</b> চালু করো। Google Drive হলে শেয়ার "Anyone with the link" রাখো।</div>`:"";
+      const fr=src=>`<div style="display:flex;flex-direction:column;height:100%"><iframe src="${src}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="flex:1;width:100%;border:0;background:#000"></iframe>${hint}</div>`;
+      if(y)st.innerHTML=fr(`https://www.youtube.com/embed/${y[1]}?rel=0&playsinline=1&modestbranding=1`);
+      else if(g)st.innerHTML=fr(`https://drive.google.com/file/d/${g[1]}/preview`);
       else if(u)st.innerHTML=`<video controls playsinline src="${esc(u)}"></video>`;
       else st.innerHTML=`<p class="sub" style="padding:20px">ভিডিও শীঘ্রই আসছে।</p>`;
     }else{const f=document.createElement("iframe");f.setAttribute("sandbox","allow-scripts allow-forms allow-modals");f.srcdoc=d.html||"";st.appendChild(f)}
@@ -325,8 +331,14 @@ async function loadAdmin(){
         <input id="nc" list="chl" placeholder="অধ্যায়, যেমন: অধ্যায় ৫ · ডাটাবেস"><datalist id="chl">${chs.map(c=>`<option value="${esc(c)}">`).join("")}</datalist>
         <label><input type="checkbox" id="nf" style="width:auto"> ফ্রি ডেমো হিসেবে রাখো</label>
         <input type="file" id="nh" accept=".html,.htm"><button class="btn" id="na" style="margin-top:6px">যোগ করো</button><div class="msg" id="nm"></div></div>
+      <div class="card" style="margin-bottom:12px"><b>নতুন ভিডিও লেসন যোগ করো</b><small style="color:var(--mute);display:block;margin:4px 0 8px">প্রতিটি ভিডিওর জন্য আলাদা করে যোগ করো, আগেরগুলো থাকবে।</small>
+        <input id="vt1" placeholder="ভিডিওর নাম"><input id="vn1" placeholder="ছোট বিবরণ (ঐচ্ছিক)">
+        <input id="vc1" list="chl" placeholder="অধ্যায়, যেমন: অধ্যায় ৪ · ওয়েব ডিজাইন ও HTML">
+        <input id="vu1" placeholder="YouTube / Google Drive / mp4 লিংক" autocapitalize="off">
+        <label><input type="checkbox" id="vf1" style="width:auto"> ফ্রি ডেমো হিসেবে রাখো</label>
+        <button class="btn" id="nva" style="margin-top:6px">ভিডিও যোগ করো</button><div class="msg" id="vm1"></div></div>
       <b>সব লেসন</b>`+lessons.map(l=>`<div class="it"><b>${esc(l.title)}</b> <span class="bd ${l.free?"g":"y"}">${l.free?"ফ্রি":"লকড"}</span><small>${esc(l.ch)} · ${esc(l.type)}</small>${l.type==="video"?`<input data-vid="${esc(l.id)}" placeholder="YouTube বা ভিডিও লিংক বসাও"><button class="sm p" data-act="vid" data-id="${esc(l.id)}">লিংক সেভ করো</button>`:""}<div class="acts"><button class="sm" data-act="tg" data-id="${esc(l.id)}">${l.free?"লকড করো":"ফ্রি করো"}</button><button class="sm d" data-act="del" data-id="${esc(l.id)}">মুছে ফেলো</button></div></div>`).join("");
-      $("pk").onchange=uploadPack;$("na").onclick=addLesson;
+      $("pk").onchange=uploadPack;$("na").onclick=addLesson;$("nva").onclick=addVideo;
     }
   }catch(e){b.innerHTML=`<p class="msg e">লোড হয়নি: ${esc(e.code||e.message)}<br>Firestore Rules ঠিকমতো বসানো আছে কি না দেখো এবং ইমেইল ভেরিফাই হয়েছে কি না।</p>`}
 }
@@ -337,8 +349,8 @@ $("abody").onclick=async e=>{
     else if(a==="off"){await updateDoc(doc(db,"users",t.dataset.uid),{subUntil:0})}
     else if(a==="ok"){await approve(t.dataset.rid,t.dataset.uid)}
     else if(a==="no"){await updateDoc(doc(db,"requests",t.dataset.rid),{status:"rejected"})}
-    else if(a==="vid"){const v=document.querySelector(`[data-vid="${t.dataset.id}"]`).value.trim();await setDoc(doc(db,"content",t.dataset.id),{url:v,free:false});t.textContent="সেভ হয়েছে";t.disabled=false;return}
-    else if(a==="tg"){const l=lessons.find(x=>x.id===t.dataset.id);await updateDoc(doc(db,"lessons",l.id),{free:!l.free});if(l.type==="html")await updateDoc(doc(db,"content",l.id),{free:!l.free});await loadLessons()}
+    else if(a==="vid"){const v=document.querySelector(`[data-vid="${t.dataset.id}"]`).value.trim();await setDoc(doc(db,"content",t.dataset.id),{url:v,free:!!(lessons.find(x=>x.id===t.dataset.id)||{}).free});t.textContent="সেভ হয়েছে";t.disabled=false;return}
+    else if(a==="tg"){const l=lessons.find(x=>x.id===t.dataset.id);await updateDoc(doc(db,"lessons",l.id),{free:!l.free});if(l.type==="html"||l.type==="video")await setDoc(doc(db,"content",l.id),{free:!l.free},{merge:true});await loadLessons()}
     else if(a==="del"){if(!confirm("সত্যিই মুছবে?")){t.disabled=false;return}await deleteDoc(doc(db,"lessons",t.dataset.id));try{await deleteDoc(doc(db,"content",t.dataset.id))}catch(_){}await loadLessons()}
     await loadAdmin();render();
   }catch(err){alert("হয়নি: "+(err.code||err.message));t.disabled=false}
@@ -352,6 +364,16 @@ async function uploadPack(e){
     m.textContent="আপলোড শেষ! ✅";await loadLessons();render();loadAdmin();
   }catch(err){m.className="msg e";m.textContent="আপলোড হয়নি: "+(err.code||err.message)}
 }
+async function addVideo(){
+  const m=$("vm1"),title=$("vt1").value.trim(),ch=$("vc1").value.trim(),url=$("vu1").value.trim();
+  if(!title||!ch||!url){m.className="msg e";m.textContent="নাম, অধ্যায় ও ভিডিও লিংক দাও।";return}
+  try{
+    const free=$("vf1").checked,id="v"+Date.now(),order=lessons.reduce((a,l)=>Math.max(a,l.order||0),0)+1;
+    await setDoc(doc(db,"content",id),{url,free});
+    await setDoc(doc(db,"lessons",id),{id,ch,title,note:$("vn1").value.trim(),type:"video",free,order});
+    m.className="msg g";m.textContent="ভিডিও যোগ হয়েছে ✅";await loadLessons();render();loadAdmin();
+  }catch(err){m.className="msg e";m.textContent="হয়নি: "+(err.code||err.message)}
+}
 async function addLesson(){
   const m=$("nm"),f=$("nh").files[0],title=$("nt").value.trim(),ch=$("nc").value.trim();
   if(!title||!ch||!f){m.className="msg e";m.textContent="নাম, অধ্যায় ও HTML ফাইল দাও।";return}
@@ -363,5 +385,6 @@ async function addLesson(){
   }catch(err){m.className="msg e";m.textContent="হয়নি: "+(err.code||err.message)}
 }
 </script>
+<script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>
 </body>
 </html>

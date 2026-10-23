@@ -226,6 +226,8 @@ dialog{border-color:rgba(34,211,238,.25)}
 @keyframes fromL{from{opacity:0;transform:translateX(-38px)}}
 .sl img.fromR{animation:fromR .26s cubic-bezier(.2,.8,.2,1)}
 .sl img.fromL{animation:fromL .26s cubic-bezier(.2,.8,.2,1)}
+#app .plan{animation:up .5s both}
+#app .gold::after,#dlg .gold::after,#adm .gold::after,#stage .gold::after{display:none}
 #bgfx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;display:block}
 .orbs{z-index:-1}
 #app{position:relative;z-index:1}
@@ -414,7 +416,10 @@ async function openLesson(l){
 function slides(l){
   const st=$("stage"),n=l.pages||1,fp=l.freePages||0,cache={};let i=1,dir=0;
   const okAt=k=>can(l)||k<=fp;
-  const load=async k=>{if(k<1||k>n||!okAt(k)||cache[k]!==undefined)return;try{const s=await getDoc(doc(db,"content",l.id+"_"+k));cache[k]=s.exists()?s.data().img:""}catch(e){}};
+  const keep={},pend={};
+  const load=k=>{if(k<1||k>n||!okAt(k)||cache[k]!==undefined)return Promise.resolve();if(pend[k])return pend[k];
+    return pend[k]=getDoc(doc(db,"content",l.id+"_"+k)).then(x=>{cache[k]=x.exists()?x.data().img:"";if(cache[k]){const m=new Image();m.src=cache[k];keep[k]=m;if(m.decode)m.decode().catch(()=>{})}}).catch(()=>{}).then(()=>{delete pend[k]})};
+  const warm=()=>{[1,2,3,4,-1,-2].forEach(d=>load(i+d))};
   const go=d=>{const t=i+d;if(t<1||t>n)return;dir=d;i=t;draw()};
   const draw=async()=>{
     const ok=okAt(i);
@@ -424,7 +429,7 @@ function slides(l){
     try{
       await load(at);
       if(at===i&&$("im")){const im=$("im");im.innerHTML=cache[at]?`<img alt="স্লাইড ${at}" src="${cache[at]}" draggable="false" class="${dir>0?"fromR":dir<0?"fromL":""}">`:"পেজ পাওয়া যায়নি"}
-      load(at+1);
+      warm();
     }catch(e){if($("im"))$("im").innerHTML=lockCard()}
   };
   let sx=0,sy=0,multi=false,live=false;
@@ -659,7 +664,7 @@ async function addLesson(){
   function detect(){
     var v=document.getElementById("view"),adm=document.getElementById("adm"),au=document.getElementById("auth");
     if((v&&v.classList.contains("on"))||(adm&&adm.style.display==="flex"))return"off";
-    return(au&&!au.hidden)?"login":"app";
+    return(au&&!au.hidden)?"login":"off";
   }
   function sync(){var m=detect(),cur=off?"off":mode;if(m!==cur)setMode(m)}
   size();draw();

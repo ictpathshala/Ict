@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ICT পাঠশালা</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0d1440">
+<meta name="theme-color" content="#060a14">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
 <style>
 :root{--bg:#f1f3f9;--card:#fff;--ink:#0f1630;--mute:#5a6585;--acc:#2f4bd8;--gold:#c8921a;--goldbg:#fbf1d6;--line:#dfe4f0;--ok:#0e7a57;--sh:0 1px 2px rgba(15,22,48,.06),0 8px 24px -12px rgba(15,22,48,.18);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#090e1f;--card:#121a35;--ink:#eaeefb;--mute:#97a3c6;--acc:#8ea4ff;--gold:#ecc062;--goldbg:#2a2412;--line:#222d52;--ok:#52d6a6;--sh:0 1px 0 rgba(255,255,255,.04) inset,0 10px 28px -14px rgba(0,0,0,.8)}}
@@ -166,9 +166,70 @@ dialog::backdrop{-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
 #auth .card>*:nth-child(1){animation-delay:.2s}#auth .card>*:nth-child(2){animation-delay:.26s}#auth .card>*:nth-child(3){animation-delay:.32s}#auth .card>*:nth-child(4){animation-delay:.38s}#auth .card>*:nth-child(5){animation-delay:.44s}#auth .card>*:nth-child(7){animation-delay:.5s}#auth .card>*:nth-child(9){animation-delay:.56s}
 .foot{text-align:center;color:#8c98c8;font-size:.8rem;margin:16px 0 0}
 @media (max-width:600px){dialog{margin:auto 0 0;width:100%;max-width:none;max-height:90vh;border-radius:26px 26px 0 0;border-bottom:0;padding:22px 20px calc(24px + env(safe-area-inset-bottom,0px))}dialog[open]{animation:sheet .35s cubic-bezier(.2,.9,.3,1)}}
+
+/* ===== PREMIUM v6 : ICT Tech (Cyan x Violet, Mono) ===== */
+:root,:root[data-theme="light"],:root[data-theme="dark"]{--bg:#060a14;--card:#0d1424;--ink:#e8f0ff;--mute:#8a9bbd;--acc:#22d3ee;--gold:#fbbf24;--goldbg:rgba(251,191,36,.10);--line:#1b2745;--ok:#34d399;--sh:0 1px 0 rgba(255,255,255,.04) inset,0 18px 40px -22px rgba(0,0,0,.9);color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#060a14;--card:#0d1424;--ink:#e8f0ff;--mute:#8a9bbd;--acc:#22d3ee;--gold:#fbbf24;--goldbg:rgba(251,191,36,.10);--line:#1b2745;--ok:#34d399}}
+body{font-family:"Space Grotesk","Hind Siliguri","Noto Sans Bengali",system-ui,sans-serif;background:var(--bg);letter-spacing:.005em}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(55% 38% at 92% -4%,rgba(34,211,238,.16),transparent 70%),radial-gradient(50% 36% at -6% 98%,rgba(139,92,246,.18),transparent 70%),linear-gradient(rgba(120,160,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(120,160,255,.045) 1px,transparent 1px);background-size:auto,auto,34px 34px,34px 34px}
+h1,h2,h3{font-family:"Space Grotesk","Hind Siliguri",sans-serif;letter-spacing:-.015em}
+.logo{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:.95rem;color:#67e8f9;background:linear-gradient(145deg,#0f1a36,#070c1c);border:1px solid rgba(34,211,238,.55);box-shadow:0 0 0 1px rgba(139,92,246,.25),0 0 22px -4px rgba(34,211,238,.55),inset 0 1px 0 rgba(255,255,255,.1);text-shadow:0 0 10px rgba(34,211,238,.8)}
+.gold{color:#031318;font-weight:700;background:linear-gradient(135deg,#67e8f9 0%,#22d3ee 45%,#6d8bff 100%);box-shadow:0 10px 26px -10px rgba(34,211,238,.9),0 0 0 1px rgba(255,255,255,.18) inset}
+.gold::after{background:linear-gradient(100deg,transparent,rgba(255,255,255,.6),transparent)}
+.btn,:root:not([data-theme="light"]) .btn{color:#031318;background:linear-gradient(135deg,#67e8f9,#22d3ee 55%,#6d8bff);box-shadow:0 8px 20px -10px rgba(34,211,238,.8)}
+.btn.alt{background:transparent;color:var(--acc);box-shadow:none;border:1px solid var(--line)}
+.plan{color:#e8f0ff;border:1px solid transparent;background:linear-gradient(155deg,#101a3a 0%,#0a1128 55%,#070b1c 100%) padding-box,linear-gradient(120deg,rgba(34,211,238,.9),rgba(139,92,246,.35) 45%,rgba(34,211,238,.85)) border-box;background-size:auto,200% 200%;box-shadow:0 30px 60px -28px rgba(34,211,238,.35),0 0 0 1px rgba(255,255,255,.03) inset}
+.plan::before{background:radial-gradient(circle at 92% -10%,rgba(34,211,238,.30),transparent 46%),radial-gradient(circle at 0% 115%,rgba(139,92,246,.32),transparent 52%),linear-gradient(rgba(120,160,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(120,160,255,.06) 1px,transparent 1px);background-size:auto,auto,22px 22px,22px 22px;-webkit-mask-image:linear-gradient(160deg,#000 30%,rgba(0,0,0,.35));mask-image:linear-gradient(160deg,#000 30%,rgba(0,0,0,.35))}
+.plan::after{content:"</>";font-family:"JetBrains Mono",monospace;font-size:6.2rem;right:6px;bottom:-14px;color:rgba(34,211,238,.07);letter-spacing:-.05em}
+.plan .k{font-family:"JetBrains Mono","Hind Siliguri",monospace;font-size:.78rem;color:#67e8f9;background:rgba(34,211,238,.10);border-color:rgba(34,211,238,.45);letter-spacing:.03em}
+.plan .k::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 8px #34d399;margin-right:8px;vertical-align:1px}
+.plan p{color:#a9b9dd}
+.plan .am{font-family:"JetBrains Mono","Hind Siliguri",monospace;background:linear-gradient(180deg,#fff,#67e8f9);-webkit-background-clip:text;background-clip:text}
+.plan .am small{color:#8fa3d1;font-family:"Hind Siliguri",sans-serif}
+.num{font-family:"JetBrains Mono","Hind Siliguri",monospace;color:#67e8f9;border-radius:14px;border:1px solid rgba(34,211,238,.55);background:linear-gradient(145deg,rgba(34,211,238,.14),rgba(139,92,246,.10));box-shadow:0 0 18px -6px rgba(34,211,238,.7)}
+.chh small{font-family:"JetBrains Mono","Hind Siliguri",monospace;font-size:.76rem}
+.grp{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01)),var(--card);border:1px solid var(--line);border-radius:22px}
+.ic{color:#67e8f9;background:linear-gradient(145deg,rgba(34,211,238,.16),rgba(139,92,246,.08));border:1px solid rgba(34,211,238,.25)}
+@media (hover:hover){.grp .row:hover{background:linear-gradient(90deg,rgba(34,211,238,.08),transparent)}}
+.grp .row:active{background:rgba(34,211,238,.12)}
+.tg{font-family:"JetBrains Mono","Hind Siliguri",monospace;font-size:.72rem;background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.35)}
+.tg.l{background:rgba(251,191,36,.08);color:#fbbf24;border-color:rgba(251,191,36,.3)}
+.stat b{font-family:"JetBrains Mono","Hind Siliguri",monospace;background:linear-gradient(180deg,#fff,#22d3ee);-webkit-background-clip:text;background-clip:text}
+.stat::after{background:radial-gradient(circle,rgba(34,211,238,.28),transparent 70%)}
+.bd{font-family:"JetBrains Mono","Hind Siliguri",monospace}
+.tabs button.on,:root:not([data-theme="light"]) .tabs button.on{background:linear-gradient(135deg,#67e8f9,#22d3ee 60%,#6d8bff);color:#031318;border-color:transparent}
+.top{background:rgba(10,16,32,.78);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid rgba(34,211,238,.18)}
+.hd{background:rgba(6,10,20,.72)}
+.lock{border-color:rgba(251,191,36,.4);background:linear-gradient(180deg,var(--card),rgba(251,191,36,.06))}
+.banner{border-color:rgba(251,191,36,.4)}
+input,select,textarea{background:rgba(255,255,255,.04)}
+input:focus,textarea:focus,select:focus{outline:none;border-color:#22d3ee;box-shadow:0 0 0 3px rgba(34,211,238,.2)}
+dialog{border-color:rgba(34,211,238,.25)}
+.lnk{color:#67e8f9}
+/* লগইন পেজ */
+.orbs{background:radial-gradient(120% 80% at 50% 0%,#0f1d45 0%,#080e24 55%,#04070f 100%)}
+.orbs::after{background-size:34px 34px;background-image:linear-gradient(rgba(120,170,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(120,170,255,.08) 1px,transparent 1px)}
+.orbs i:nth-child(1){background:#22d3ee;opacity:.22}
+.orbs i:nth-child(2){background:#8b5cf6;opacity:.40}
+.orbs i:nth-child(3){background:#2563eb;opacity:.38}
+#auth .sub,#auth label{color:#9db0d6}
+#auth h1{font-size:2.1rem;background:linear-gradient(180deg,#fff,#9fe8f7);-webkit-background-clip:text;background-clip:text}
+#auth .card{background:rgba(255,255,255,.05);border:1px solid rgba(34,211,238,.25);border-radius:24px;box-shadow:0 30px 70px -30px rgba(34,211,238,.35)}
+#auth input:focus{border-color:#22d3ee;box-shadow:0 0 0 3px rgba(34,211,238,.25)}
+#auth .tabs button{color:#9db0d6}
+#auth .tabs button.on{background:linear-gradient(135deg,#67e8f9,#22d3ee 60%,#6d8bff);color:#031318}
+#auth .lnk{color:#67e8f9}
+.chips span{font-family:"JetBrains Mono","Hind Siliguri",monospace;color:#67e8f9;border-color:rgba(34,211,238,.4);background:rgba(34,211,238,.08)}
+#bgfx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;display:block}
+.orbs{z-index:-1}
+#app{position:relative;z-index:1}
+.foot{color:#6f82ab;font-family:"JetBrains Mono","Hind Siliguri",monospace}
+#boot::before{border-top-color:#22d3ee}
+.plan .k,.chips span,.tg,.chh small,.foot,.bd{word-spacing:-.28em}
 </style>
 </head>
 <body>
+<canvas id="bgfx" aria-hidden="true"></canvas>
 
 <div id="boot" class="wrap"><p class="sub">লোড হচ্ছে…</p></div>
 
@@ -501,6 +562,101 @@ async function addLesson(){
     m.className="msg g";m.textContent="যোগ হয়েছে ✅";await loadLessons();render();loadAdmin();
   }catch(err){m.className="msg e";m.textContent="হয়নি: "+(err.code||err.message)}
 }
+</script>
+<script>
+/* ICT ব্যাকগ্রাউন্ড অ্যানিমেশন: লগইনে বেশি, অ্যাপে মাঝারি, লেসন খুললে বন্ধ */
+(function(){
+  var cv=document.getElementById("bgfx");if(!cv||!cv.getContext)return;
+  var cx=cv.getContext("2d"),rm=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var MODES={
+    login:{nodeK:1.9,maxN:84,link:150,la:.42,ba:.30,colW:34,sp:1.35,ns:1.25,rad:1.35},
+    app:{nodeK:1,maxN:44,link:125,la:.22,ba:.15,colW:48,sp:.8,ns:.8,rad:1}
+  };
+  var mode="app",P=MODES.app,W=0,H=0,D=1,N=[],C=[],last=0,raf=0,off=false,LH=15,TAIL=8;
+  function hash(a,b){return Math.floor(Math.abs(Math.sin(a*12.9898+b*78.233)*43758.5453))}
+  function build(){
+    var n=Math.round(Math.min(P.maxN,Math.max(20,W*H/21000*P.nodeK))),i;
+    N=[];
+    for(i=0;i<n;i++)N.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3*P.ns,vy:(Math.random()-.5)*.3*P.ns,r:(1+Math.random()*1.5)*P.rad,v:Math.random()<.35});
+    var cols=Math.floor(W/P.colW);C=[];
+    for(i=0;i<cols;i++)C.push({x:i*P.colW+P.colW/2,y:Math.random()*H,s:(.35+Math.random()*.6)*P.sp});
+  }
+  function size(){
+    D=Math.min(window.devicePixelRatio||1,2);W=window.innerWidth;H=window.innerHeight;
+    cv.width=Math.round(W*D);cv.height=Math.round(H*D);cx.setTransform(D,0,0,D,0,0);build();
+  }
+  function draw(){
+    cx.clearRect(0,0,W,H);
+    cx.font='12px "JetBrains Mono",ui-monospace,monospace';cx.textAlign="center";
+    var i,j,k,c,p,q,dx,dy,d,a,y,L=P.link;
+    for(i=0;i<C.length;i++){
+      c=C[i];
+      for(k=0;k<TAIL;k++){
+        y=c.y-k*LH;if(y<-LH||y>H+LH)continue;
+        a=P.ba*(1-k/TAIL);if(a<=0)continue;
+        cx.fillStyle=(k===0?"rgba(190,245,255,":"rgba(34,211,238,")+(k===0?Math.min(1,a*2.2):a).toFixed(3)+")";
+        cx.fillText(hash(Math.floor(y/LH),c.x)%2?"1":"0",c.x,y);
+      }
+    }
+    for(i=0;i<N.length;i++){
+      p=N[i];
+      for(j=i+1;j<N.length;j++){
+        q=N[j];dx=p.x-q.x;dy=p.y-q.y;d=dx*dx+dy*dy;
+        if(d<L*L){
+          a=P.la*(1-Math.sqrt(d)/L);
+          cx.strokeStyle=(p.v||q.v)?"rgba(139,92,246,"+a.toFixed(3)+")":"rgba(34,211,238,"+a.toFixed(3)+")";
+          cx.lineWidth=1;cx.beginPath();cx.moveTo(p.x,p.y);cx.lineTo(q.x,q.y);cx.stroke();
+        }
+      }
+    }
+    for(i=0;i<N.length;i++){
+      p=N[i];
+      cx.fillStyle=p.v?"rgba(167,139,250,.85)":"rgba(103,232,249,.85)";
+      cx.beginPath();cx.arc(p.x,p.y,p.r,0,6.2832);cx.fill();
+    }
+  }
+  function step(){
+    var i,p,c;
+    for(i=0;i<N.length;i++){
+      p=N[i];p.x+=p.vx;p.y+=p.vy;
+      if(p.x<-20)p.x=W+20;else if(p.x>W+20)p.x=-20;
+      if(p.y<-20)p.y=H+20;else if(p.y>H+20)p.y=-20;
+    }
+    for(i=0;i<C.length;i++){
+      c=C[i];c.y+=c.s;
+      if(c.y-TAIL*LH>H){c.y=-Math.random()*200;c.s=(.35+Math.random()*.6)*P.sp}
+    }
+  }
+  function frame(t){
+    raf=requestAnimationFrame(frame);
+    if(t-last<33)return;last=t;step();draw();
+  }
+  function start(){if(!raf&&!rm&&!off&&!document.hidden)raf=requestAnimationFrame(frame)}
+  function stop(){if(raf){cancelAnimationFrame(raf);raf=0}}
+  function setMode(m){
+    if(m==="off"){off=true;stop();cx.clearRect(0,0,W,H);cv.style.display="none";return}
+    var was=off;off=false;cv.style.display="block";
+    if(m!==mode||was){mode=m;P=MODES[m];build()}
+    draw();start();
+  }
+  function detect(){
+    var v=document.getElementById("view"),adm=document.getElementById("adm"),au=document.getElementById("auth");
+    if((v&&v.classList.contains("on"))||(adm&&adm.style.display==="flex"))return"off";
+    return(au&&!au.hidden)?"login":"app";
+  }
+  function sync(){var m=detect(),cur=off?"off":mode;if(m!==cur)setMode(m)}
+  size();draw();
+  ["view","adm","auth","app"].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el&&window.MutationObserver)new MutationObserver(sync).observe(el,{attributes:true,attributeFilter:["class","style","hidden"]});
+  });
+  sync();start();
+  window.addEventListener("resize",function(){
+    if(window.innerWidth!==W||Math.abs(window.innerHeight-H)>160){size();if(!off)draw()}
+  });
+  document.addEventListener("visibilitychange",function(){document.hidden?stop():start()});
+  window.__bgfx={setMode:setMode};
+})();
 </script>
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>
 </body>
